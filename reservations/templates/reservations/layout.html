@@ -18,29 +18,16 @@
         <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
 
         <script src="{% static 'js/index.js' %}"></script>
+
+      
+
     </head>
     <body>
         <header>
             <div class="container-fluid relative">
-<div class = "fixed">
+                <div class="fixed">
                     <div class="row top tl-fixed-top">
-
-
-                        
-                        
-                        
                         <div class="col-sm-2">
-                            <!-- <button
-                                class="navbar-toggler"
-                                type="button"
-                                data-toggle="collapse"
-                                data-target="#navbarSupportedContent"
-                                aria-controls="navbarSupportedContent"
-                                aria-expanded="false"
-                                aria-label="Toggle navigation"
-                            > -->
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
                             <a href="{% url 'index' %}"
                                 ><img
                                     class="logo"
@@ -48,8 +35,8 @@
                                     alt="hotel"
                             /></a>
                         </div>
-    
-                        <div class="main col-sm-8">
+
+                        <div class="main col-md-8 col-sm-12">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-sm-12">
                                     <a href="#map"
@@ -59,7 +46,7 @@
                                         ></a
                                     >
                                 </div>
-    
+
                                 <div class="col-lg-6 col-md-12 col-sm-12">
                                     <span class="phone"
                                         ><a href="tel:+78124418383"
@@ -68,7 +55,7 @@
                                     >|
                                     <a href="mailto:sales@spb.ru"
                                         ><span class="mail"
-                                            ><span class = "email-adr"
+                                            ><span class="email-adr"
                                                 >sales@spb.ru</span
                                             ></span
                                         ></a
@@ -77,33 +64,38 @@
                             </div>
                         </div>
 
-
                         <div class="auth col-lg-2 col-md-12 col-sm-12">
                             {% if user.is_authenticated %}
-    
+
                             <span>{{ user.username }}</span>
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            <a class="nav-link" href="{% url 'logout' %}"
+                                >Logout</a
+                            >
                             {% else %}
-                                                                            <a
-                                                
-                                                href="/permit/"
-                                                title="Visa support"
-                                                >Register</a
-                                            >
+                            <a href="/permit/" title="Visa support">Register</a>
                             {% endif %}
                         </div>
-
                     </div>
-    
-                    <div class="row tl-fixed-nav">
-                        <div class="col-md-12 col-lg-10 offset-lg-2">
-                            <nav id="sidebar"
-                                class="navbar navbar-expand-md navbar-light" 
-                            >
 
-    
+                    <div class="row tl-fixed-nav">
+                        <div class="col-md-12 col-lg-10 offset-lg-2 ">
+                            <nav
+                                id="sidebar"
+                                class="navbar navbar-expand-md navbar-light"
+                            >
+                                <button
+                                    class="navbar-toggler"
+                                    type="button"
+                                    data-target="#navbarSupportedContent"
+                                    aria-controls="navbarSupportedContent"
+                                    aria-expanded="false"
+                                    aria-label="Toggle navigation"
+                                >
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+
                                 <div
-                                    class="collapse navbar-collapse"
+                                    class="navbar-collapse"
                                     id="navbarSupportedContent"
                                 >
                                     <ul class="navbar-nav">
@@ -115,7 +107,7 @@
                                                 >Booking</a
                                             >
                                         </li>
-    
+
                                         <li class="nav-item">
                                             <a
                                                 class="nav-link"
@@ -124,7 +116,7 @@
                                                 >Rooms &amp; Prices</a
                                             >
                                         </li>
-    
+
                                         <li class="nav-item">
                                             <a
                                                 class="nav-link"
@@ -133,7 +125,7 @@
                                                 >About Us</a
                                             >
                                         </li>
-    
+
                                         <li class="nav-item">
                                             <a
                                                 class="nav-link"
@@ -142,7 +134,7 @@
                                                 >Reviews</a
                                             >
                                         </li>
-    
+
                                         <li class="nav-item">
                                             <a
                                                 class="nav-link"
@@ -152,14 +144,17 @@
                                             >
                                         </li>
 
-
-                                        
+                                        <button id= "dismiss" type="button" class="close" aria-label="Close">
+                                          <span aria-hidden="true">&times; </span>
+                                        </button>
                                     </ul>
+                                    
                                 </div>
                             </nav>
                         </div>
                     </div>
-</div>
+                    <div class="overlay collapse"></div>
+                </div>
             </div>
         </header>
 
