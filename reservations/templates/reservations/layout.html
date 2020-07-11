@@ -24,6 +24,8 @@
             
         <script src="{% static 'js/index.js' %}"></script>
 
+
+
       
 
     </head>
@@ -32,7 +34,7 @@
             <div class="container-fluid relative">
                 <div class="fixed">
                     <div class="row top tl-fixed-top">
-                        <div class="col-sm-2">
+                        <div class="col-2">
                             <a href="{% url 'index' %}"
                                 ><img
                                     class="logo"
@@ -43,7 +45,7 @@
 
                         <div class="main col-md-8 col-sm-12">
                             <div class="row">
-                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                <div class="col-lg-6 col-sm-12">
                                     <a href="#map"
                                         ><span class="adr"
                                             >22/2, Sadovaya street,
@@ -157,6 +159,7 @@
                                 </div>
                             </nav>
                         </div>
+                    
                     </div>
                     <div class="overlay collapse"></div>
                 </div>
@@ -166,6 +169,21 @@
         <div>
             {% block body %} {% endblock %}
         </div>
+
+        <footer>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6 copyrt">
+	              <p>© M-Hotel official website. All right reserved.<br>
+	              </p>
+                    </div>
+                    
+                    <div class="col-sm-6 social text-center">
+                        <a target="_blank" href="https://www.facebook.com/"><img src="/static/img/facebook.svg" alt="Facebook"></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
         <script
             src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -182,6 +200,9 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"
         ></script>
+
+
+
 
     </body>
 </html>

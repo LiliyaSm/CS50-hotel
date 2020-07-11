@@ -1,13 +1,13 @@
 function addBodyClass() {
     // show menu button and hide menu
     if ($(window).width() > 767) {
-        $("button").addClass("hide");
+        $("#dismiss").addClass("hide");
         $(".navbar-collapse").removeClass("hide-menu");
         $(".navbar-collapse").removeClass("slide");
         $(".overlay").addClass("collapse");
 
     } else {
-        $("button").removeClass("hide");
+        $("#dismiss").removeClass("hide");
         $(".navbar-collapse").addClass("hide-menu");
     }
 }
@@ -70,6 +70,14 @@ $(document).ready(function () {
     });
 
     Slideshow(".swiper-container");
+    // set min value for arrival
+
+    // let currentDate = new Date().toISOString().split("T")[0];
+    // id_departure.value = id_arrival.value = id_arrival.min = currentDate;
+    // to.min = new Date().toISOString().split("T")[0];
+    $("#id_arrival").on("change", function () {
+        id_departure.min = id_arrival.value;
+    });
 });
 
 $(window).on("load resize", function () {
