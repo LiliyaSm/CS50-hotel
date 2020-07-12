@@ -1,0 +1,31 @@
+{% extends "reservations/layout.html" %} 
+{% load static %} 
+{% block title %}
+Booking {% endblock %}
+
+{% block body %}
+
+<div class="container-fluid mt-5">
+    
+<div class="indent">
+
+        {% for room in rooms %}
+        <div class="col-md-3 mb-sm-12">
+
+                {{ room }}
+            
+                {% for image in images.room %}
+
+                <img
+                                    src="{{ image.url }}"
+                                    alt="hotel"
+                            />
+
+            {% endfor %}
+
+        </div>
+            {% endfor %}
+</div>
+    
+</div>
+{% endblock %}

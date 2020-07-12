@@ -72,12 +72,6 @@ header .logo {
     font-weight: 400;
 }
 
-/* 
-header button.toggler {
-    position: absolute;
-    top: 0;
-    left: 1em;
-} */
 .hide {
     display: none;
 }
@@ -211,6 +205,14 @@ input[type=date]{
 input[type=date]{
 outline: none;
 }
+
+/* end search form */
+
+.indent {
+    margin-top: 200px;
+}
+
+
 
 
 footer {

@@ -3,11 +3,11 @@ from django.urls import reverse
 from django.shortcuts import redirect, render, get_object_or_404
 # from django.db.models import Q
 from django.http import HttpResponse
-from .models import Booking
+from .models import Booking, Room, Image
 # import json
 # import decimal
 import datetime
-# import copy
+from django.views.generic.list import ListView
 from django.contrib import messages
 from django import forms
 
@@ -31,3 +31,18 @@ def index(request):
         return render(request, "reservations/index.html", {
             "form": BookingForm()
         })
+    if request.method == "POST":
+        return redirect("booking")
+
+
+def booking(request):
+    return render(request, "reservations/booking.html")
+
+
+def rooms(request):
+    rooms = Room.objects.all()
+    images = Image.objects.all()
+    return render(request, "reservations/rooms.html", {
+        "rooms": rooms,
+        "images": images
+    })

@@ -69,7 +69,9 @@ $(document).ready(function () {
         $(".overlay").addClass("collapse");
     });
 
-    Slideshow(".swiper-container");
+    if (window.location.pathname == "/") {
+        Slideshow(".swiper-container");
+    }
     // set min value for arrival
 
     // let currentDate = new Date().toISOString().split("T")[0];

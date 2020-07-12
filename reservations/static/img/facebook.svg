@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.2 (12043) - http://www.bohemiancoding.com/sketch -->
+    <title>Imported Layers</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="main" sketch:type="MSArtboardGroup" transform="translate(-1006.000000, -3958.000000)" fill="#EAEAEA">
+            <g id="Footer" sketch:type="MSLayerGroup" transform="translate(-4.000000, 3828.000000)">
+                <g id="Social" transform="translate(726.000000, 130.000000)" sketch:type="MSShapeGroup">
+                    <path d="M304,10 L306,10 L306,6 L302.13,6 C298.25,6 299,10 299,10 L299,13 L297,13 L297,17 L299,17 L299,26 L303,26 L303,17 L305,17 L306,13 L303,13 L303,11 C303,10.18 304,10 304,10 L304,10 Z M300,32 C291.16,32 284,24.84 284,16 C284,7.16 291.16,0 300,0 C308.84,0 316,7.16 316,16 C316,24.84 308.84,32 300,32 L300,32 Z" id="Imported-Layers"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
