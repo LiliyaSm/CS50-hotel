@@ -17,12 +17,11 @@ class RoomFacility(models.Model):
 
     class Meta:
        verbose_name = 'RoomFacility'
-       verbose_name_plural = 'RoomFacilities'
+       verbose_name_plural = 'Room Facilities'
 
 
 
-
-class Room(models.Model):
+class RoomCategory(models.Model):
     CATEGORY_CHOICES = (
         ('Single', 'Single'),
         ('Double', 'Double/twin'),
@@ -37,11 +36,10 @@ class Room(models.Model):
         (3, 3),
         (4, 4),
     )
-    roomNumber = models.CharField(max_length=3)
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
     description = models.CharField(max_length=1000, blank=True)
     # the upload_to option to specify a subdirectory of MEDIA_ROOT to use for uploaded files
-    
+    mainFoto = models.ImageField(upload_to=upload_path, blank=True, null=True)
     facilities = models.ManyToManyField(RoomFacility)
     price = models.DecimalField(max_digits=6, decimal_places=2)    
     guests = models.PositiveIntegerField(choices=GUESTS_CHOICES, default=1)
@@ -53,9 +51,18 @@ class Room(models.Model):
     def __str__(self):
         return f"{self.category}"
 
+    class Meta:
+        verbose_name = 'Room category'
+        verbose_name_plural = 'Room categories'
 
-class Image(models.Model):
+
+class Room(models.Model):
+
+    roomNumber = models.CharField(max_length=3)
+
+
+class RoomImage(models.Model):
     room = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name='images')
+        RoomCategory, on_delete=models.CASCADE, related_name='images')
     img = models.ImageField(upload_to=upload_path, blank=True, null=True)
     # uploaded_at = models.DateTimeField(auto_now_add=True)

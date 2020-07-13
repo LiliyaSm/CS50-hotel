@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.shortcuts import redirect, render, get_object_or_404
 # from django.db.models import Q
 from django.http import HttpResponse
-from .models import Booking, Room, Image
+from .models import Booking, Room, RoomCategory
 # import json
 # import decimal
 import datetime
@@ -40,9 +40,7 @@ def booking(request):
 
 
 def rooms(request):
-    rooms = Room.objects.all()
-    images = Image.objects.all()
+    rooms = RoomCategory.objects.all()
     return render(request, "reservations/rooms.html", {
         "rooms": rooms,
-        "images": images
     })

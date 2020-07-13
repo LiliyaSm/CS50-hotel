@@ -5,23 +5,22 @@ Booking {% endblock %}
 
 {% block body %}
 
-<div class="container-fluid mt-5">
+<div class="container mt-5">
     
-<div class="indent">
+<div class="row indent">
 
         {% for room in rooms %}
-        <div class="col-md-3 mb-sm-12">
+        <div class="col-md-6 col-lg-6 col-sm-12 mb-3">
 
-                {{ room }}
+                <h2>{{ room }}</h2>
+               <div> {{ room.description }}</div>
             
-                {% for image in images.room %}
 
-                <img
-                                    src="{{ image.url }}"
-                                    alt="hotel"
+                <img class  = "room-foto"
+                                    src="{{ room.mainFoto.url }}"
+                                    alt="room foto"
                             />
 
-            {% endfor %}
 
         </div>
             {% endfor %}

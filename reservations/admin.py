@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from .models import Room, RoomFacility, Image
+from .models import Room, RoomFacility, RoomImage, RoomCategory
 from django.db import models
 
 
@@ -16,6 +16,7 @@ from django.db import models
     #     }
 
 
+admin.site.register(RoomCategory)
 admin.site.register(Room)
 admin.site.register(RoomFacility)
-admin.site.register(Image)
+admin.site.register(RoomImage)
