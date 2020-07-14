@@ -8,6 +8,7 @@ from .models import Booking, Room, RoomCategory
 # import decimal
 import datetime
 from django.views.generic.list import ListView
+from django.views.generic import DetailView
 from django.contrib import messages
 from django import forms
 
@@ -22,12 +23,26 @@ class BookingForm(forms.ModelForm):
         }
 
 
+class CategoryListView(ListView):
+
+    # Add in a QuerySet of all the categories
+    queryset = RoomCategory.objects.all()
+    template_name = 'reservations/rooms.html'
+
+
+class CategoryDetail(DetailView):
+
+    context_object_name = 'category'
+    queryset = RoomCategory.objects.all()
+    slug_field = 'category'
+    template_name = "reservations/room-detail.html"
+    slug_url_kwarg = 'category'
+
+
 def index(request):
     """rendering items on the main page"""
 
     if request.method == "GET":
-        # items = Item.objects.exclude(
-        #     Q(group__dishType="Toppings") | Q(group__dishType="Extras"))
         return render(request, "reservations/index.html", {
             "form": BookingForm()
         })
@@ -39,8 +54,8 @@ def booking(request):
     return render(request, "reservations/booking.html")
 
 
-def rooms(request):
-    rooms = RoomCategory.objects.all()
-    return render(request, "reservations/rooms.html", {
-        "rooms": rooms,
-    })
+# def rooms(request):
+#     rooms = RoomCategory.objects.all()
+#     return render(request, "reservations/rooms.html", {
+#         "rooms": rooms,
+#     })

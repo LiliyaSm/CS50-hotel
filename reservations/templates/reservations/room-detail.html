@@ -1,0 +1,27 @@
+{% extends "reservations/layout.html" %} 
+{% load static %} 
+{% block title %}
+Booking {% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    
+<div class="indent">
+
+
+        
+                        <h2>{{ object.category }}</h2>
+                    <div> {{ object.description }}</div>
+                    
+        
+                        <img class  = "room-foto"
+                                            src="{{ object.mainFoto.url }}"
+                                            alt="room foto"
+                                    />
+        
+
+</div>
+    
+</div>
+{% endblock %}

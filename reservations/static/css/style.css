@@ -212,9 +212,16 @@ outline: none;
     margin-top: 200px;
 }
 
+.category {
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
+}
 
+a:hover.category {
+    color: inherit;
+    text-decoration: inherit; /* no underline */
 
-
+}
 footer {
     background: #595357;
     /* display: table; */
