@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.shortcuts import redirect, render, get_object_or_404
 # from django.db.models import Q
 from django.http import HttpResponse
-from .models import Booking, Room, RoomCategory
+from .models import Booking, Room, RoomCategory, RoomImage
 # import json
 # import decimal
 import datetime
@@ -35,8 +35,13 @@ class CategoryDetail(DetailView):
     context_object_name = 'category'
     queryset = RoomCategory.objects.all()
     slug_field = 'category'
-    template_name = "reservations/room-detail.html"
     slug_url_kwarg = 'category'
+    template_name = "reservations/room-detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryDetail, self).get_context_data(**kwargs)
+        context['images'] = RoomImage.objects.filter(room = self.object)
+        return context
 
 
 def index(request):

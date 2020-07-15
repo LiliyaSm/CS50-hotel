@@ -16,7 +16,19 @@ from django.db import models
     #     }
 
 
-admin.site.register(RoomCategory)
+# admin.py
+class RoomImageInline(admin.TabularInline):
+    model = RoomImage
+    extra = 3
+
+
+class RoomCategoryAdmin(admin.ModelAdmin):
+    inlines = [RoomImageInline, ]
+
+
+admin.site.register(RoomCategory, RoomCategoryAdmin)
+
+# admin.site.register(RoomCategory)
 admin.site.register(Room)
 admin.site.register(RoomFacility)
-admin.site.register(RoomImage)
+# admin.site.register(RoomImage)

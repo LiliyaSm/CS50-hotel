@@ -59,10 +59,46 @@ $(document).ready(function () {
         $(".overlay").removeClass("collapse");
     });
 
+        $(".gallery").slick({
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            infinite: true,
+            //	variableWidth:true,
+            dots: true,
+            centerMode: false,
+            variableWidth: false,
+            autoplay: true,
+            autoplaySpeed: 5000,
+            arrows: false,
+            responsive: [
+                {
+                    breakpoint: 1100,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    },
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                    },
+                },
+            ],
+        });
+
+            $(".left").click(function () {
+                $(".gallery").slick("slickPrev");
+            });
+
+            $(".right").click(function () {
+                $(".gallery").slick("slickNext");
+            });
+
     $("#dismiss").on("click", function () {
         // hide sidebar
         // $(".navbar-collapse").addClass("collapse");
-
         $(".navbar-collapse").addClass("hide-menu");
         $(".navbar-collapse").removeClass("slide");
 

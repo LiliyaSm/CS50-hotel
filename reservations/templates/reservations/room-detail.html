@@ -1,27 +1,59 @@
-{% extends "reservations/layout.html" %} 
-{% load static %} 
-{% block title %}
-Booking {% endblock %}
-
-{% block body %}
+{% extends "reservations/layout.html" %} {% load static %} {% block title %}
+{{object.category }} {% endblock %} {% block body %}
 
 <div class="container mt-5">
-    
-<div class="indent">
+    <div class="indent">
 
+        <div class="mb-5">
+            <h2>{{ object.category }}</h2>
+            <div>{{ object.description }}</div>
+        </div>
 
-        
-                        <h2>{{ object.category }}</h2>
-                    <div> {{ object.description }}</div>
-                    
-        
-                        <img class  = "room-foto"
-                                            src="{{ object.mainFoto.url }}"
-                                            alt="room foto"
-                                    />
-        
+        <div class="row mb-5">
+            <div class="col-md-4 col-sm-12">
+                <strong>For this room we offer: </strong>
+                {% for facility in object.facilities.all %}
 
+                <li>{{ facility }}</li>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-8 col-sm-12">
+                <img
+                    class="room-foto"
+                    src="{{ object.mainFoto.url }}"
+                    alt="room foto"
+                />
+            </div>
+        </div>
+    </div>
+
+    <!-- Swiper -->
+
+    <div class="room-swiper">
+        <div class="gallery">
+            {% for image in images %}
+
+            <div>
+                <img
+                    class="room-foto"
+                    src="{{ image.img.url }}"
+                    alt="room foto"
+                />
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- arrows -->
+        <p class="left"></p>
+        <p class="right"></p>
+    </div>
 </div>
-    
-</div>
+
+<!-- Swiper JS -->
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+></script>
+
 {% endblock %}

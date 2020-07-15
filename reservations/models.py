@@ -16,7 +16,7 @@ class RoomFacility(models.Model):
         return f"{self.item}"
 
     class Meta:
-       verbose_name = 'RoomFacility'
+       verbose_name = 'Room Facility'
        verbose_name_plural = 'Room Facilities'
 
 
