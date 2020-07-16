@@ -12,10 +12,12 @@
         <div class="row mb-5">
             <div class="col-md-4 col-sm-12">
                 <strong>For this room we offer: </strong>
-                {% for facility in object.facilities.all %}
-
-                <li>{{ facility }}</li>
-                {% endfor %}
+<ul class = "facilities">
+                    {% for facility in object.facilities.all %}
+    
+                    <li>{{ facility }}</li>
+                    {% endfor %}
+</ul>
             </div>
 
             <div class="col-md-8 col-sm-12">
@@ -49,7 +51,44 @@
         <p class="right"></p>
     </div>
 </div>
+<script>
+            $(".gallery").slick({
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            infinite: true,
+            //	variableWidth:true,
+            dots: true,
+            centerMode: false,
+            variableWidth: false,
+            autoplay: true,
+            autoplaySpeed: 5000,
+            arrows: false,
+            responsive: [
+                {
+                    breakpoint: 1100,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    },
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                    },
+                },
+            ],
+        });
 
+            $(".left").click(function () {
+                $(".gallery").slick("slickPrev");
+            });
+
+            $(".right").click(function () {
+                $(".gallery").slick("slickNext");
+            });
+</script>
 <!-- Swiper JS -->
 <script
     type="text/javascript"

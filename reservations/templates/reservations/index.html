@@ -51,35 +51,34 @@ Hotel {% endblock %}
     
 </div>
 
-<div class="search-wrapper ">
+    <div class="search-wrapper ">
         
-    <form method="post" >
-    <div class="row" id="tl-search-form">
-             {% csrf_token %}
-            <div class="col-3" >
-                <span class="search-title">Book online</span>    
-                <div>Guaranteed accommodation</div>
-            </div>
+        <form method="post" >
+        <div class="row" id="tl-search-form">
+                {% csrf_token %}
+                <div class="col-3" >
+                    <span class="search-title">Book online</span>    
+                    <div>Guaranteed accommodation</div>
+                </div>
 
-            <div class = "col-3 align-self-center">                
-               {{ form.arrival.label_tag  }}
-               {{ form.arrival  }}
-            </div>
+                <div class = "col-3 align-self-center">                
+                {{ form.arrival.label_tag  }}
+                {{ form.arrival  }}
+                </div>
 
 
-            <div class = "col-3 align-self-center">
-                {{ form.departure.label_tag  }}
-                {{ form.departure  }}
-                <!-- <input type="date" min='2020-01-01' id="to" name="to" > -->
+                <div class = "col-3 align-self-center">
+                    {{ form.departure.label_tag  }}
+                    {{ form.departure  }}
+                </div>
+                <div class="col-md-3 col-sm-12 align-self-center">
+                    <button method="post" action = "{% url 'booking' %}" >
+                        Find room
+                    </button>
+                </div>
+                
             </div>
-            <div class="col-md-3 col-sm-12 align-self-center">
-                <button method="post" action = "{% url 'booking' %}" >
-                    Find room
-                </button>
-            </div>
-            
-        </div>
-    </form>
+        </form>
     </div>
 </div>
 

@@ -59,42 +59,42 @@ $(document).ready(function () {
         $(".overlay").removeClass("collapse");
     });
 
-        $(".gallery").slick({
-            slidesToShow: 2,
-            slidesToScroll: 1,
-            infinite: true,
-            //	variableWidth:true,
-            dots: true,
-            centerMode: false,
-            variableWidth: false,
-            autoplay: true,
-            autoplaySpeed: 5000,
-            arrows: false,
-            responsive: [
-                {
-                    breakpoint: 1100,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                    },
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                    },
-                },
-            ],
-        });
+        // $(".gallery").slick({
+        //     slidesToShow: 2,
+        //     slidesToScroll: 1,
+        //     infinite: true,
+        //     //	variableWidth:true,
+        //     dots: true,
+        //     centerMode: false,
+        //     variableWidth: false,
+        //     autoplay: true,
+        //     autoplaySpeed: 5000,
+        //     arrows: false,
+        //     responsive: [
+        //         {
+        //             breakpoint: 1100,
+        //             settings: {
+        //                 slidesToShow: 2,
+        //                 slidesToScroll: 1,
+        //             },
+        //         },
+        //         {
+        //             breakpoint: 768,
+        //             settings: {
+        //                 slidesToShow: 1,
+        //                 slidesToScroll: 1,
+        //             },
+        //         },
+        //     ],
+        // });
 
-            $(".left").click(function () {
-                $(".gallery").slick("slickPrev");
-            });
+        //     $(".left").click(function () {
+        //         $(".gallery").slick("slickPrev");
+        //     });
 
-            $(".right").click(function () {
-                $(".gallery").slick("slickNext");
-            });
+        //     $(".right").click(function () {
+        //         $(".gallery").slick("slickNext");
+        //     });
 
     $("#dismiss").on("click", function () {
         // hide sidebar
@@ -115,6 +115,7 @@ $(document).ready(function () {
     // to.min = new Date().toISOString().split("T")[0];
     $("#id_arrival").on("change", function () {
         id_departure.min = id_arrival.value;
+        id_departure.value = id_arrival.value;
     });
 });
 

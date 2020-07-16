@@ -1,12 +1,26 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
+from django.core.validators import MinValueValidator
+from datetime import date
 
+GUESTS_CHOICES = (
+       (1, 1),
+       (2, 2),
+       (3, 3),
+       (4, 4),
+   )
 # upload_location = FileSystemStorage(location='/reservations/static/img')
 upload_path = 'roomFotos'
+
 class Booking(models.Model):
 
-    arrival = models.DateField('arrival')
-    departure = models.DateField('departure')
+    arrival = models.DateField('arrival',
+                               validators=[MinValueValidator(limit_value=date.today)])
+    departure = models.DateField('departure',
+                                 validators=[MinValueValidator(limit_value=date.today)])
+    # people per room
+    guests = models.PositiveIntegerField(
+        choices=GUESTS_CHOICES, default=1, verbose_name='guests per room')
 
 
 class RoomFacility(models.Model):
@@ -30,19 +44,14 @@ class RoomCategory(models.Model):
         ('SPA', 'Suite SPA'),
     )
 
-    GUESTS_CHOICES = (
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-    )
+
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
     description = models.CharField(max_length=1000, blank=True)
     # the upload_to option to specify a subdirectory of MEDIA_ROOT to use for uploaded files
     mainFoto = models.ImageField(upload_to=upload_path, blank=True, null=True)
     facilities = models.ManyToManyField(RoomFacility)
     price = models.DecimalField(max_digits=6, decimal_places=2)    
-    guests = models.PositiveIntegerField(choices=GUESTS_CHOICES, default=1)
+    capacity = models.PositiveIntegerField(choices=GUESTS_CHOICES, default=1)
     totalAmount = models.PositiveIntegerField(default=1)
 
 

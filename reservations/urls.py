@@ -5,7 +5,7 @@ from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", views.IndexView.as_view(), name="index"),
     path("booking", views.booking, name="booking"),
     # path('rooms', views.rooms, name='rooms'),
     path('rooms', views.CategoryListView.as_view(), name='rooms'),
