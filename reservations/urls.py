@@ -9,7 +9,7 @@ urlpatterns = [
     path("booking", views.booking, name="booking"),
     # path('rooms', views.rooms, name='rooms'),
     path('rooms', views.CategoryListView.as_view(), name='rooms'),
-    path('rooms/<slug:category>', views.CategoryDetail.as_view(), name='room-detail'),
+    path('rooms/<slug:name>', views.CategoryDetail.as_view(), name='room-detail'),
     
      
     # path('delete_item/', views.delete_item, name='delete_item'),

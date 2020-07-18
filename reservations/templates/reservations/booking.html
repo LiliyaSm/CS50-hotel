@@ -11,36 +11,8 @@ Booking {% endblock %}
 
     <div class="search-wrapper ">
         
-        <form method="post" >
-        <div class="row" id="tl-search-form">
-                {% csrf_token %}
-                
-                <div class = "col-3 align-self-center">                
-                    {{ form.arrival.label_tag  }}
-                    {{ form.arrival  }}
-                </div>
-                
-                
-                <div class = "col-4 align-self-center">
-                    {{ form.departure.label_tag  }}
-                    {{ form.departure  }}
-                </div>
+        {% include "reservations/search-form.html" %}   
 
-
-                <div class="col-3" >
-                    <span>Choose number guests per room: </span>    
-                    {# form.guests.label_tag  #}
-                    {{ form.guests  }}
-
-                </div>
-                <div class="col-md-2 col-sm-12 align-self-center">
-                    <button method="post" action = "{% url 'booking' %}" >
-                        Find room
-                    </button>
-                </div>
-                
-            </div>
-        </form>
     </div>
 </div>
     

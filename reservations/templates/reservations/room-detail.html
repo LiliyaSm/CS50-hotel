@@ -1,11 +1,14 @@
 {% extends "reservations/layout.html" %} {% load static %} {% block title %}
-{{object.category }} {% endblock %} {% block body %}
+{{object.name }} {% endblock %} 
+
+
+{% block body %}
 
 <div class="container mt-5">
     <div class="indent">
 
         <div class="mb-5">
-            <h2>{{ object.category }}</h2>
+            <h2>{{ object.name }}</h2>
             <div>{{ object.description }}</div>
         </div>
 
@@ -51,6 +54,12 @@
         <p class="right"></p>
     </div>
 </div>
+
+<!-- Swiper JS -->
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+></script>
 <script>
             $(".gallery").slick({
             slidesToShow: 2,
@@ -89,10 +98,6 @@
                 $(".gallery").slick("slickNext");
             });
 </script>
-<!-- Swiper JS -->
-<script
-    type="text/javascript"
-    src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
-></script>
+
 
 {% endblock %}
