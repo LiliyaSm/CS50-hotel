@@ -1,0 +1,13 @@
+{% extends "reservations/layout.html" %} 
+{% block title %}
+{{ user..get_full_name }} {% endblock %}
+
+{% block body %}
+<div class="indent">
+    {{ user.username }} 
+    {{ user.email }}
+    {{ user.first_name }} 
+    {{ user.last_name }} 
+
+</div>   
+{% endblock %}

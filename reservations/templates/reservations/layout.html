@@ -81,12 +81,16 @@
                         <div class="auth col-lg-2 col-md-12 col-sm-12">
                             {% if user.is_authenticated %}
 
-                            <span>{{ user.username }}</span>
+                            <a href="{% url 'profile' user.username  %}"><span>{{ user.username }}</span>
+                                </a
+                            >
                             <a href="{% url 'logout' %}"
                                 >Logout</a
                             >
                             {% else %}
-                            <a href="/permit/" title="Visa support">Register</a>
+                            <a href="{% url 'login' %}" >Sign in</a>
+
+                            <a href="{% url 'registration' %}" title="Register">/Register</a>
                             {% endif %}
                         </div>
                     </div>
@@ -180,12 +184,12 @@
         <footer>
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-6 copyrt">
+                    <div class="col-sm-7 text-right">
 	              <p>© Hotel official website. All right reserved.<br>
 	              </p>
                     </div>
                     
-                    <div class="col-sm-6 social text-center">
+                    <div class="col-sm-5 social text-center">
                         <a target="_blank" href="https://www.facebook.com/"><img src="/static/img/facebook.svg" alt="Facebook"></a>
                     </div>
                 </div>
@@ -210,5 +214,3 @@
     </body>
 </html>
 
-{#<!-- <li class="nav-item"><a class="nav-link" href="{% url 'registration' %}">Register</a></li>                 -->#}
-{#<!-- <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li> -->#}

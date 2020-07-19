@@ -87,25 +87,32 @@ class IndexView(View):
     # arrival = request.GET.get('arrival')
 
     # form.save()
-def booking(request):
-    form = BookingForm(request.GET)
-    if not form.is_valid():            
-        try:
-            data = eval(request.session.get('form_data'))
-            form = BookingForm(initial=data)
-        except TypeError:
-            form = BookingForm()
 
-        return render(request, "reservations/booking.html", {
-            "form": form
+
+class BookingView(View):
+    template_name = "reservations/booking.html"
+
+    def get(self, request, *args, **kwargs):
+        form = BookingForm(request.GET)
+        if not form.is_valid():            
+            try:
+                data = eval(request.session.get('form_data'))
+                form = BookingForm(initial=data)
+            except TypeError:
+                form = BookingForm()
+            return render(request, self.template_name, {
+                "form": form
+            })
+            form = BookingForm()
+            return render(request, self.template_name, {'form': form})
+        # save user search
+        request.session['form_data'] = deserialize(form.cleaned_data)
+
+        available_rooms = RoomCategory.objects.all()
+
+        return render(request, self.template_name, {
+            "form": form, "available_rooms": available_rooms
         })
-        form = BookingForm()
-        return render(request, 'reservations/booking.html', {'form': form})
-    # save user search
-    request.session['form_data'] = deserialize(form.cleaned_data)
-    return render(request, "reservations/booking.html", {
-        "form": form
-    })
 
 
 

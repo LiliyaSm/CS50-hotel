@@ -7,20 +7,21 @@
 <div class="container mt-5">
     <div class="indent">
 
-        <div class="mb-5">
+        <div class="room-title">
             <h2>{{ object.name }}</h2>
-            <div>{{ object.description }}</div>
+            <h2><strong class = "price">{{ object.price }}</strong>/day</h2>
         </div>
-
+        
+        <div class="mb-5">{{ object.description }}</div>
         <div class="row mb-5">
             <div class="col-md-4 col-sm-12">
                 <strong>For this room we offer: </strong>
-<ul class = "facilities">
-                    {% for facility in object.facilities.all %}
-    
-                    <li>{{ facility }}</li>
-                    {% endfor %}
-</ul>
+                    <ul class = "facilities">
+                        {% for facility in object.facilities.all %}
+        
+                        <li>{{ facility }}</li>
+                        {% endfor %}
+                    </ul>
             </div>
 
             <div class="col-md-8 col-sm-12">
@@ -41,7 +42,7 @@
 
             <div>
                 <img
-                    class="room-foto"
+                    class="swipe-foto"
                     src="{{ image.img.url }}"
                     alt="room foto"
                 />
@@ -72,6 +73,7 @@
             autoplay: true,
             autoplaySpeed: 5000,
             arrows: false,
+            rows: 0,
             responsive: [
                 {
                     breakpoint: 1100,
@@ -90,6 +92,13 @@
             ],
         });
 
+    //     $(".gallery").on('setPosition', function () {
+    //   $(this).find('.slick-slide').height('auto');
+    //   var slickTrack = $(this).find('.slick-track');
+    //   var slickTrackHeight = $(slickTrack).height();
+    //   $(this).find('.slick-slide').css('height', slickTrackHeight + 'px');
+    //   });
+
             $(".left").click(function () {
                 $(".gallery").slick("slickPrev");
             });
@@ -97,6 +106,9 @@
             $(".right").click(function () {
                 $(".gallery").slick("slickNext");
             });
+
+
+
 </script>
 
 

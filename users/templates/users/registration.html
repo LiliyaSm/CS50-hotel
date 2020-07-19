@@ -1,0 +1,32 @@
+{% extends "reservations/layout.html" %} 
+{% block title %}
+Register {% endblock %}
+
+{% block body %}
+
+<div class="indent">
+    <br>
+    <form method="post">    
+        {% csrf_token %}
+        <h2>Registration form</h2>
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+
+            {% if field.help_text %}
+                <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+
+            {% if form.errors %}
+
+            {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+            {% endfor %}
+            {% endif %}            
+        </p>
+            {% endfor %}
+        <button  class="btn btn-primary" type="submit">Sign Up</button>
+    </form>
+</div>
+{% endblock %}

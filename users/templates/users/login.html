@@ -1,0 +1,34 @@
+{% extends "reservations/layout.html" %} 
+{% block title %}
+Sign up {% endblock %}
+
+{% block body %}
+
+<div class ="indent">
+
+        <form class="col-lg-4 mx-auto" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <h3>Login</h3>
+
+        <div class="form-group">
+            <label for="username">{{ form.username.label_tag }} </label>
+            {{form.username }}
+        </div>
+
+        <div class="form-group">
+            {{ form.password.label_tag }} {{ form.password }}
+        </div>
+
+        {% for error in form.non_field_errors %}
+        <p style="color: red;">{{ error }}</p>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Log In</button>
+        <div class="mt-4">
+            <a href="{% url 'registration' %}"
+                >Don't have an account yet? Press here to sign up
+            </a>
+        </div>
+    </form>
+    
+</div>
+{% endblock %}
