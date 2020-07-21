@@ -6,7 +6,7 @@ Register {% endblock %}
 
 <div class="indent">
     <br>
-    <form method="post">    
+    <form class="col-lg-5 mx-auto" method="post">    
         {% csrf_token %}
         <h2>Registration form</h2>
         {% for field in form %}
@@ -26,7 +26,7 @@ Register {% endblock %}
             {% endif %}            
         </p>
             {% endfor %}
-        <button  class="btn btn-primary" type="submit">Sign Up</button>
+        <button  class="button" type="submit">Sign Up</button>
     </form>
 </div>
 {% endblock %}

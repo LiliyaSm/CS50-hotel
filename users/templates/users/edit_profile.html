@@ -2,26 +2,24 @@
 <div class="container-fluid indent">
     <form class="col-lg-10 mx-auto" method="post">
         {% csrf_token %}
-        <div class = "text-right"><a class = "text-right" href = "{% url 'edit_profile' user.username %}">Edit profile</a></div>
         <h2 class="text-center mb-5">Profile</h2>
-            
 
         <div class="row form-group">
 
             <div class="col-lg-2">
-                <strong>{{ form.first_name.label_tag  }}</strong>
+                <strong>{{ form_filled.first_name.label_tag }}</strong>
             </div>
 
             <div class="col-lg-4">
-                {{profile.first_name}}
+                {{form_filled.first_name}}
             </div>
 
             <div class="col-lg-2">
-                <strong>{{ form.last_name.label_tag }}</strong>
+                 <strong>{{ form_filled.last_name.label_tag }}</strong>
             </div>
 
             <div class="col-lg-4">                
-                {{profile.last_name}}
+                {{form_filled.last_name}}
             </div>
             
         </div>
@@ -29,31 +27,33 @@
         <div class="row form-group">
            
             <div class="col-lg-2">
-               <strong> {{ form.email.label_tag }}</strong>
+                 <strong>{{ form_filled.email.label_tag }}</strong>
             </div>
             <div class="col-lg-4">
-                {{ profile.email }}
+                {{ form_filled.email }}
             </div>
                         <div class="col-lg-2 ">
-                <strong>{{form.citizenship.label_tag }} </strong>
+                 <strong> {{form_filled.citizenship.label_tag }} </strong>
             </div>
             <div class="col-lg-4 ">
                 
-                {{profile.citizenship}}
+                {{form_filled.citizenship}}
             </div>
         </div>
         <div class="row form-group">
 
             <div class="col-lg-2">
-               <strong> {{ form.phone_number.label_tag }}</strong>
+                 <strong> {{ form_filled.phone_number.label_tag }}</strong>
             </div>
             <div class="col-lg-4">
-                {{ profile.phone_number }}
+                {{ form_filled.phone_number }}
             </div>
 
         </div>
 
-    </form>
 
+
+        <button class="button d-block mx-auto mb-5" type="submit">Save</button>
+    </form>
 </div>
 {% endblock %}

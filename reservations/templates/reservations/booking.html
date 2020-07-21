@@ -23,8 +23,17 @@ Booking {% endblock %}
             <h5 class="card-title">{{ room.name }}</h5>
             <p class="card-text">Up to {{ room.capacity }} guests</p>
             <div class="d-flex justify-content-between">
-                <p class = "price mr-5">price</p>
-                <button href="#" class="search-button ml-5">Select</button>
+                <p class = "price mr-4">price</p>
+
+                {% if user.is_authenticated %}
+                <button href="#" class="button search-button ml-5">Select</button>
+                            {% else %}
+                <button href="#" class="button search-button unauthenticated ml-5">Sign in</button>
+
+                            {% endif %}
+
+
+
                 </div>
           </div>
         </div>

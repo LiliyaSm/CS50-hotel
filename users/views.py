@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate
-from users.forms import UserRegistrationForm
+from django.contrib.auth import authenticate, login
+from users.forms import UserRegistrationForm, ProfileForm
 from .models import Profile
 from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
-
-# Create your views here.
 
 
 def registration(request):
@@ -49,4 +47,29 @@ def registration(request):
 @login_required()
 def get_user_profile(request, username):
     user = User.objects.get(username=username)
-    return render(request, 'users/user_profile.html', {"user": user})
+    profile = Profile.objects.get(user=user)
+    form = ProfileForm()
+
+    return render(request, 'users/user_profile.html', {"user": user,
+                                                        "profile": profile,
+                                                        "form":form})
+
+
+@login_required()
+def edit_user_profile(request, username):
+    if request.method == 'POST':
+        profile = Profile.objects.get(user=request.user)
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            # form_filled = ProfileForm(instance=profile)
+            return redirect("profile", request.user.username)
+        return render(request, 'users/edit_profile.html', {"form_filled": form})
+    else:
+
+        user = User.objects.get(username=username)
+        profile = Profile.objects.get(user=user)
+        form_filled = ProfileForm(instance=profile)
+
+        return render(request, 'users/edit_profile.html', {"user": user,
+                                                           "form_filled": form_filled})

@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
     path("registration", user_views.registration, name="registration"),
     path('profile/<username>', user_views.get_user_profile, name="profile"),
+    path('profile/<username>/edit', user_views.edit_user_profile, name="edit_profile"),
 ]

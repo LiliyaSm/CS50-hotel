@@ -31,9 +31,9 @@ class BookingForm(forms.ModelForm):
             'arrival': forms.DateInput(attrs={'type': 'date', "value": now, "min": now }),
             'departure': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
         }
-        def __init__(self,  *args,**kwargs):
-            super(BookingForm, self).__init__(*args, **kwargs)
-            self.fields['guests'].required = False
+        # def __init__(self,  *args,**kwargs):
+        #     super(BookingForm, self).__init__(*args, **kwargs)
+        #     self.fields['guests'].required = False
 
         # def clean_field(self):
         #     data = self.cleaned_data['guests']
