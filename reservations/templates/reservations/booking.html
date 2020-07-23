@@ -10,8 +10,18 @@ Booking {% endblock %}
 <div class="indent">
 
     <div class="search-wrapper mb-3">
-        
-        {% include "reservations/search-form.html" %}   
+        <form method="GET" >
+        <div class="row" id="tl-search-form">
+            {% include "reservations/search-form.html" %}   
+
+                <div class="col-md-2 col-sm-12 align-self-center">
+                    <button class = "button search-button" >
+                        Find room
+                    </button>
+                </div>
+                
+            </div>
+        </form>
 
     </div>
 <div class="row ml-1">
@@ -19,26 +29,39 @@ Booking {% endblock %}
     <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card" >
           <img class="card-img-top" src="{{ room.mainFoto.url }}" alt="Card image cap">
-          <div class="card-body">
+
+          <div data-id="{{ room.id }}" class="card-body" method="post">
+            {% csrf_token %}
+
             <h5 class="card-title">{{ room.name }}</h5>
-            <p class="card-text">Up to {{ room.capacity }} guests</p>
-            <div class="d-flex justify-content-between">
-                <p class = "price mr-4">price</p>
+                <p class="card-text">Up to {{ room.capacity }} guests</p>
+                    <div class="d-flex justify-content-between">
+                        <p class = "price mr-4">price</p>
 
-                {% if user.is_authenticated %}
-                <button href="#" class="button search-button ml-5">Select</button>
-                            {% else %}
-                <button href="#" class="button search-button unauthenticated ml-5">Sign in</button>
+                        {% if user.is_authenticated %}
+                        <button href="#" class="button booking ml-5">Select</button>
+                                    {% else %}
+                        <button href="#" class="button search-button unauthenticated ml-5">Sign in</button>
 
-                            {% endif %}
+                                    {% endif %}
 
-
-
+                    </div>
                 </div>
-          </div>
         </div>
     </div>
     {% endfor %}
+
+    <div class = "sign-message hide p-1">
+        <button type="button" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+        </button>   
+        <div class ="p-5">You must be logged in for booking!<br>
+            Please, <a href="{% url 'login' %}" >Sign in</a> or
+            <a href="{% url 'registration' %}" title="Register">Register</a>
+        </div>
+
+
+    </div>
 
 </div>   
 </div>

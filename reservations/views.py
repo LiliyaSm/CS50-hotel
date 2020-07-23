@@ -11,7 +11,7 @@ from django.views.generic.list import ListView
 from django.views.generic import DetailView, View
 from django.contrib import messages
 from django import forms
-
+from django.http import JsonResponse
 
 now = str(datetime.date.today())
 
@@ -31,19 +31,12 @@ class BookingForm(forms.ModelForm):
             'arrival': forms.DateInput(attrs={'type': 'date', "value": now, "min": now }),
             'departure': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
         }
-        # def __init__(self,  *args,**kwargs):
-        #     super(BookingForm, self).__init__(*args, **kwargs)
-        #     self.fields['guests'].required = False
-
-        # def clean_field(self):
-        #     data = self.cleaned_data['guests']
-        #     if not data:
-        #         data = 1
 
 
-class BookingExtentedForm(BookingForm):
-    class Meta(BookingForm.Meta):
-        fields = ('arrival', 'departure', "guests")
+
+# class BookingExtentedForm(BookingForm):
+#     class Meta(BookingForm.Meta):
+#         fields = ('arrival', 'departure', "guests")
     # def __init__(self,request,*args,**kwargs):
     #     super(BookingExtentedForm, self).__init__(*args, **kwargs)
     #     self.fields['arrival'] = forms.CharField(
@@ -83,9 +76,6 @@ class IndexView(View):
     # request.session["arrival"] = form.cleaned_data["arrival"]
     # request.session["departure"] = form.cleaned_data["departure"]
 
-
-    # arrival = request.GET.get('arrival')
-
     # form.save()
 
 
@@ -94,25 +84,47 @@ class BookingView(View):
 
     def get(self, request, *args, **kwargs):
         form = BookingForm(request.GET)
-        if not form.is_valid():            
+
+        # filled_form = BookingForm(request.GET)
+        if not form.is_valid():
+        # # come by nav link and form is empty
             try:
                 data = eval(request.session.get('form_data'))
                 form = BookingForm(initial=data)
-            except TypeError:
-                form = BookingForm()
-            return render(request, self.template_name, {
-                "form": form
+                # make search
+                number_of_guests = int(form.initial["guests"])
+                available_rooms = RoomCategory.objects.filter(
+                    capacity__gte=number_of_guests)
+                return render(request, self.template_name, {
+                    "form": form, "available_rooms": available_rooms
             })
-            form = BookingForm()
-            return render(request, self.template_name, {'form': form})
+
+            except TypeError:
+                #if form empty display all available rooms (first search)
+                form = BookingForm()
+                available_rooms = RoomCategory.objects.all()
+                return render(request, self.template_name, {
+                    "form": form, "available_rooms": available_rooms
+            })
+
+        # case - come from index
+        # number_of_guests = form.cleaned_data['guests']
+
+        available_rooms = RoomCategory.objects.all()
+        
         # save user search
         request.session['form_data'] = deserialize(form.cleaned_data)
 
+        return render(request, self.template_name, {'form': form, "available_rooms": available_rooms})
+
+
+    def post(self, request, *args, **kwargs):
         available_rooms = RoomCategory.objects.all()
 
         return render(request, self.template_name, {
             "form": form, "available_rooms": available_rooms
         })
+        
 
 
 
@@ -121,11 +133,20 @@ class BookingView(View):
     # arrival = request.GET.get('arrival')
 
 
+def booking_submit(request):
+    """ returns response with list of available categories' ids  """
 
-# def index(request):
-#     
+    arrival = request.GET.get("arrival", "")
+    departure = request.GET.get("departure", "")
+    number_of_guests = int(request.GET.get("guests", ""))
 
-#     if request.method == "GET":
-#         return render(request, "reservations/index.html", {
-#         })
-#     
+    # flat = True to get a plain list instead of a list of tuples
+    categories = RoomCategory.objects.filter(
+        capacity__gte=number_of_guests).values_list('id', flat=True)
+
+
+    print(categories)
+    # data = {"arrival": arrival}
+    # json_data = json.dumps(categories)
+    # return HttpResponse(json_data, content_type="application/json")
+    return JsonResponse({"categories": list(categories)})

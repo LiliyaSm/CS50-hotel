@@ -52,8 +52,42 @@ Hotel {% endblock %}
 </div>
 
     <div class="search-wrapper ">
-        
- {% include "reservations/search-form.html" %}   
+        <form action="{% url 'booking' %}" method="GET" >
+        <div class="row" id="tl-search-form">
+                
+
+            
+
+            <div class="col-3" >
+                <span class="search-title">Book online</span>    
+                <div>Guaranteed accommodation</div>
+            </div>
+
+            <div class = "col-3 align-self-center">                
+               {{ form.arrival.label_tag  }}
+               {{ form.arrival  }}
+            </div>
+
+
+            <div class = "col-3 align-self-center">
+                {{ form.departure.label_tag  }}
+                {{ form.departure  }}
+                <!-- <input type="date" min='2020-01-01' id="to" name="to" > -->
+            </div> 
+
+            <div class="hide">
+                {{ form.guests }}
+            </div>
+
+                
+                <div class="col-md-2 col-sm-12 align-self-center">
+                    <button class = "button"  action = "{% url 'booking' %}" >
+                        Find room
+                    </button>
+                </div>
+                
+            </div>
+        </form>
     </div>
 </div>
 

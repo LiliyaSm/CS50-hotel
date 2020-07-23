@@ -52,12 +52,82 @@ function addBodyClass() {
     
 
 $(document).ready(function () {
+
+//  setting up AJAX to pass CSRF token
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                    cookieValue = decodeURIComponent(
+                        cookie.substring(name.length + 1)
+                    );
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie("csrftoken");
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+    });
+
+
+
+    // $(".booking").on("click", function (e) {
+    //     e.preventDefault();
+    //     const room = $(this).closest(".card-body");
+    //     const id = room.attr("data-id");
+    //     $.post("booking_submit", { id: id }, function (response) {
+    //         console.log(response.available);
+    //     })
+    // });
+
+    
+
+
+    $(".search-button").on("click", function (e) {
+        e.preventDefault();
+        const arrival = $("#id_arrival").val();
+        const departure = $("#id_departure").val();
+        const guests = $("#id_guests").val();
+        $.get("booking_submit", { arrival: arrival, departure:departure, guests: guests, }, function (
+            response
+        ) {
+            console.log(response.categories);
+        });
+    });
+
+
+    //show side nav menu
     $(".navbar-toggler").on("click", function (e) {
         $(".navbar-collapse").addClass("slide");
         $(".navbar-collapse").removeClass("hide-menu");
         // // hide overlay
         $(".overlay").removeClass("collapse");
     });
+
+
+    // $(".slides").on("setPosition", function () {
+    //     $(this).find(".slick-slide").height("auto");
+    //     var slickTrack = $(this).find(".slick-track");
+    //     var slickTrackHeight = $(slickTrack).height();
+    //     $(this)
+    //         .find(".slick-slide")
+    //         .css("height", slickTrackHeight + "px");
+    // });
 
         // $(".gallery").slick({
         //     slidesToShow: 2,
@@ -117,6 +187,15 @@ $(document).ready(function () {
         id_departure.min = id_arrival.value;
         id_departure.value = id_arrival.value;
     });
+
+ $(".unauthenticated").on("click", function () {
+     $(".sign-message").removeClass("hide");
+ })
+    $(".sign-message .close").click(function () {
+        $(this).parent(".sign-message").addClass("hide");
+    });
+
+
 });
 
 $(window).on("load resize", function () {

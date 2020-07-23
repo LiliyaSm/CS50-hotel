@@ -1,6 +1,4 @@
-        <form action="{% url 'booking' %}" method="GET" >
-        <div class="row" id="tl-search-form">
-                
+
                 <div class = "col-3 align-self-center">                
                     {{ form.arrival.label_tag  }}
                     {{ form.arrival  }}
@@ -17,13 +15,4 @@
                     <span>Choose number guests per room: </span>    
                     {# form.guests.label_tag  #}
                     {{ form.guests  }}
-
                 </div>
-                <div class="col-md-2 col-sm-12 align-self-center">
-                    <button class = "button search-button"  action = "{% url 'booking' %}" >
-                        Find room
-                    </button>
-                </div>
-                
-            </div>
-        </form>
