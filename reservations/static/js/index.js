@@ -88,8 +88,8 @@ $(document).ready(function () {
 
     // $(".booking").on("click", function (e) {
     //     e.preventDefault();
-    //     const room = $(this).closest(".card-body");
-    //     const id = room.attr("data-id");
+    //     const card = $(this).closest(".card-body");
+    //     const id = card.attr("data-id");
     //     $.post("booking_submit", { id: id }, function (response) {
     //         console.log(response.available);
     //     })
@@ -106,16 +106,30 @@ $(document).ready(function () {
         $.get("booking_submit", { arrival: arrival, departure:departure, guests: guests, }, function (
             response
         ) {
-            console.log(response.categories);
+            const cards = $(".card-body");
+            cards.closest(".card").parent().removeClass("hide");
+            cards.each(function () {
+                let id = parseInt(($(this).attr("data-id")))
+                if (!response.categories.includes(id)){
+                    $(this).closest(".card").parent().addClass("hide");
+                }
+            
+            });
         });
     });
+
+$(".booking").on("click", function (e) {
+    e.preventDefault();
+    $(".rooms").addClass("hide");
+    const theTemplateScript = $("#expressions-template").html();
+})
 
 
     //show side nav menu
     $(".navbar-toggler").on("click", function (e) {
         $(".navbar-collapse").addClass("slide");
         $(".navbar-collapse").removeClass("hide-menu");
-        // // hide overlay
+        // hide overlay
         $(".overlay").removeClass("collapse");
     });
 

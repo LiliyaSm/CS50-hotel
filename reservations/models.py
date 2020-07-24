@@ -68,11 +68,22 @@ class Room(models.Model):
         return f"{self.roomNumber} {self.category}"
 
 
+class Transfer(models.Model):
+    airport = models.CharField(max_length=100)
+    arrivalDate = models.DateField('arrival_date',
+                                    validators=[MinValueValidator(limit_value=date.today)])
+    arrivalTime = models.TimeField()
+    flightNumber = models.CharField(max_length=100)
+    airlineCompany = models.CharField(max_length=100)
+    additionalInformation = models.CharField(max_length=200)
+
 class Booking(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='order')
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name='ordered_room')
+    transfer = models.ForeignKey(
+        Room, on_delete=models.CASCADE, related_name='transfer', blank=True, null=True)
 
     arrival = models.DateField('arrival',
                                validators=[MinValueValidator(limit_value=date.today)])
