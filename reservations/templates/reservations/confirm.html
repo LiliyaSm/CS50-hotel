@@ -1,0 +1,30 @@
+{% extends "reservations/layout.html" %} 
+{% load static %} 
+{% block title %}
+Confirmation {% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+        
+    <div class="indent">
+        </div>
+
+    <a class="back" href="#">
+        Back to room selection
+    </a>
+    <div class="transfer">
+        <h2>
+            Before your reservation is complete, you can order transfer.
+        </h2>
+
+        {{transferForm.as_p}}
+        {{transferForm.airport.label_tag}}
+        <button method="POST" href="#" class="button search-button ml-5">
+            Book
+        </button>
+    </div>
+    </div>
+    
+</div>
+{% endblock %}

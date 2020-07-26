@@ -5,55 +5,61 @@ function addBodyClass() {
         $(".navbar-collapse").removeClass("hide-menu");
         $(".navbar-collapse").removeClass("slide");
         $(".overlay").addClass("collapse");
-
     } else {
         $("#dismiss").removeClass("hide");
         $(".navbar-collapse").addClass("hide-menu");
     }
 }
+        function formatDate(date) {
+            var day = date.getDate();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            var month = date.getMonth() + 1;
+            if (month < 10) {
+                month = "0" + month;
+            }
+            var year = date.getFullYear();
+            return year + "-" + month + "-" + day ;
+        } 
+function Slideshow(element) {
+    let el = document.querySelector(element);
+    let slides = el.querySelectorAll(".swiper-slide");
+    let index = 0;
 
-	function Slideshow( element ) {
-        let el = document.querySelector(element);
-        let slides = el.querySelectorAll(".swiper-slide");
-        let index = 0;
-        
-		function moveLeft(index) {
-            var currentSlide = slides[index];
-            currentSlide.style.opacity = 1;
+    function moveLeft(index) {
+        var currentSlide = slides[index];
+        currentSlide.style.opacity = 1;
 
-            for (var i = 0; i < slides.length; i++) {
-                var slide = slides[i];
-                if (slide !== currentSlide) {
-                    slide.style.opacity = 0;
-                }
+        for (var i = 0; i < slides.length; i++) {
+            var slide = slides[i];
+            if (slide !== currentSlide) {
+                slide.style.opacity = 0;
             }
         }
-        
-		function do_slide() {
-            interval = setInterval(function () {
-                index++;
-                if (index == slides.length) {
-                    index = 0;
-                }
-                moveLeft(index);
-            }, 3000);
-        }
-        do_slide();
-        //stop while mouse hover
-        $(el).hover(function () {
-            clearInterval(interval);
-        });
-        $(el).mouseleave(function () {
-            do_slide();
-        });
-	}
-	
+    }
 
-    
+    function do_slide() {
+        interval = setInterval(function () {
+            index++;
+            if (index == slides.length) {
+                index = 0;
+            }
+            moveLeft(index);
+        }, 3000);
+    }
+    do_slide();
+    //stop while mouse hover
+    $(el).hover(function () {
+        clearInterval(interval);
+    });
+    $(el).mouseleave(function () {
+        do_slide();
+    });
+}
 
 $(document).ready(function () {
-
-//  setting up AJAX to pass CSRF token
+    //  setting up AJAX to pass CSRF token
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== "") {
@@ -85,46 +91,27 @@ $(document).ready(function () {
     });
 
 
-
-    // $(".booking").on("click", function (e) {
-    //     e.preventDefault();
-    //     const card = $(this).closest(".card-body");
-    //     const id = card.attr("data-id");
-    //     $.post("booking_submit", { id: id }, function (response) {
-    //         console.log(response.available);
-    //     })
-    // });
-
-    
-
-
     $(".search-button").on("click", function (e) {
         e.preventDefault();
         const arrival = $("#id_arrival").val();
         const departure = $("#id_departure").val();
         const guests = $("#id_guests").val();
-        $.get("booking_submit", { arrival: arrival, departure:departure, guests: guests, }, function (
-            response
-        ) {
-            const cards = $(".card-body");
-            cards.closest(".card").parent().removeClass("hide");
-            cards.each(function () {
-                let id = parseInt(($(this).attr("data-id")))
-                if (!response.categories.includes(id)){
-                    $(this).closest(".card").parent().addClass("hide");
-                }
-            
-            });
-        });
+        $.get(
+            "booking_submit",
+            { arrival: arrival, departure: departure, guests: guests },
+            function (response) {
+                const cards = $(".card-body");
+                cards.closest(".card").parent().removeClass("hide");
+                cards.each(function () {
+                    let id = parseInt($(this).find("button").attr("value"));
+                    if (!response.categories.includes(id)) {
+                        $(this).closest(".card").parent().addClass("hide");
+                    }
+                });
+            }
+        );
     });
-
-$(".booking").on("click", function (e) {
-    e.preventDefault();
-    $(".rooms").addClass("hide");
-    const theTemplateScript = $("#expressions-template").html();
-})
-
-
+    
     //show side nav menu
     $(".navbar-toggler").on("click", function (e) {
         $(".navbar-collapse").addClass("slide");
@@ -132,7 +119,6 @@ $(".booking").on("click", function (e) {
         // hide overlay
         $(".overlay").removeClass("collapse");
     });
-
 
     // $(".slides").on("setPosition", function () {
     //     $(this).find(".slick-slide").height("auto");
@@ -143,42 +129,42 @@ $(".booking").on("click", function (e) {
     //         .css("height", slickTrackHeight + "px");
     // });
 
-        // $(".gallery").slick({
-        //     slidesToShow: 2,
-        //     slidesToScroll: 1,
-        //     infinite: true,
-        //     //	variableWidth:true,
-        //     dots: true,
-        //     centerMode: false,
-        //     variableWidth: false,
-        //     autoplay: true,
-        //     autoplaySpeed: 5000,
-        //     arrows: false,
-        //     responsive: [
-        //         {
-        //             breakpoint: 1100,
-        //             settings: {
-        //                 slidesToShow: 2,
-        //                 slidesToScroll: 1,
-        //             },
-        //         },
-        //         {
-        //             breakpoint: 768,
-        //             settings: {
-        //                 slidesToShow: 1,
-        //                 slidesToScroll: 1,
-        //             },
-        //         },
-        //     ],
-        // });
+    // $(".gallery").slick({
+    //     slidesToShow: 2,
+    //     slidesToScroll: 1,
+    //     infinite: true,
+    //     //	variableWidth:true,
+    //     dots: true,
+    //     centerMode: false,
+    //     variableWidth: false,
+    //     autoplay: true,
+    //     autoplaySpeed: 5000,
+    //     arrows: false,
+    //     responsive: [
+    //         {
+    //             breakpoint: 1100,
+    //             settings: {
+    //                 slidesToShow: 2,
+    //                 slidesToScroll: 1,
+    //             },
+    //         },
+    //         {
+    //             breakpoint: 768,
+    //             settings: {
+    //                 slidesToShow: 1,
+    //                 slidesToScroll: 1,
+    //             },
+    //         },
+    //     ],
+    // });
 
-        //     $(".left").click(function () {
-        //         $(".gallery").slick("slickPrev");
-        //     });
+    //     $(".left").click(function () {
+    //         $(".gallery").slick("slickPrev");
+    //     });
 
-        //     $(".right").click(function () {
-        //         $(".gallery").slick("slickNext");
-        //     });
+    //     $(".right").click(function () {
+    //         $(".gallery").slick("slickNext");
+    //     });
 
     $("#dismiss").on("click", function () {
         // hide sidebar
@@ -192,30 +178,26 @@ $(".booking").on("click", function (e) {
     if (window.location.pathname == "/") {
         Slideshow(".swiper-container");
     }
-    // set min value for arrival
 
-    // let currentDate = new Date().toISOString().split("T")[0];
-    // id_departure.value = id_arrival.value = id_arrival.min = currentDate;
-    // to.min = new Date().toISOString().split("T")[0];
     $("#id_arrival").on("change", function () {
-        id_departure.min = id_arrival.value;
-        id_departure.value = id_arrival.value;
+        // departure date should be at least one day greater than arrival
+        let departureDate = new Date(id_arrival.value);
+        departureDate.setDate(departureDate.getDate() + 1);
+        id_departure.min = formatDate(departureDate);
+        if (new Date(id_departure.value) < new Date(id_departure.min)){
+            id_departure.value = id_departure.min;}
     });
 
- $(".unauthenticated").on("click", function () {
-     $(".sign-message").removeClass("hide");
- })
+    $(".unauthenticated").on("click", function () {
+        $(".sign-message").removeClass("hide");
+    });
     $(".sign-message .close").click(function () {
         $(this).parent(".sign-message").addClass("hide");
     });
-
-
 });
 
 $(window).on("load resize", function () {
     addBodyClass();
-     var w = $(window).width();
-     $(".navbar-collapse").css("width", w);
+    var w = $(window).width();
+    $(".navbar-collapse").css("width", w);
 });
-
-

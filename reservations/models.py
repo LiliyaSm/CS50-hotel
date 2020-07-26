@@ -14,12 +14,6 @@ GUESTS_CHOICES = (
 # upload_location = FileSystemStorage(location='/reservations/static/img')
 upload_path = 'roomFotos'
 
-class Order(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="user", null=False)
-    confirmed = models.BooleanField(default=False)
-
-
 class RoomFacility(models.Model):
     item = models.CharField(max_length=100)  # symmetrical = False,
 
@@ -69,17 +63,15 @@ class Room(models.Model):
 
 
 class Transfer(models.Model):
-    airport = models.CharField(max_length=100)
     arrivalDate = models.DateField('arrival_date',
                                     validators=[MinValueValidator(limit_value=date.today)])
     arrivalTime = models.TimeField()
     flightNumber = models.CharField(max_length=100)
-    airlineCompany = models.CharField(max_length=100)
-    additionalInformation = models.CharField(max_length=200)
 
 class Booking(models.Model):
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name='order')
+    user = models.ForeignKey(
+    User, on_delete=models.CASCADE, related_name="user", null=False)
+    confirmed = models.BooleanField(default=False)
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name='ordered_room')
     transfer = models.ForeignKey(
@@ -94,7 +86,7 @@ class Booking(models.Model):
         choices=GUESTS_CHOICES, default=1, verbose_name='guests per room')
 
     calc_price = models.DecimalField(
-        max_digits=6, decimal_places=2, default=Decimal(0))
+        max_digits=8, decimal_places=2, default=Decimal(0))
 
 
 

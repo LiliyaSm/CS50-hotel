@@ -1,106 +1,116 @@
 {% extends "reservations/layout.html" %} {% load static %} {% block title %}
 Booking {% endblock %} {% block body %}
 
-
 <div class="container mt-5">
-    <div class="indent" id="content">         
-        {{transferForm.as_p}}
-        <div class="search-wrapper mb-3">
-            <form method="GET">
-                <div class="row" id="tl-search-form">
-                    
-                    <div class = "col-3 align-self-center">                
-                        {{ form.arrival.label_tag  }}
-                        {{ form.arrival  }}
-                    </div>
-                    
-                    
-                    <div class = "col-4 align-self-center">
-                        {{ form.departure.label_tag  }}
-                        {{ form.departure  }}
-                    </div>
+    <form method = "POST" class="indent" id="content">
+        {% csrf_token %}
+            <div class="search-wrapper mb-3">
+                    <div class="row" id="tl-search-form">
+                        <div class="col-3 align-self-center">
+                            {{form.arrival.label_tag}}
+                            {{form.arrival}}
+                        </div>
 
+                        <div class="col-4 align-self-center">
+                            {{form.departure.label_tag}}
+                            {{form.departure}}
+                        </div>
 
-                    <div class="col-3" >
-                        <span>Choose number guests per room: </span>    
-                        {# form.guests.label_tag  #}
-                        {{ form.guests  }}
-                    </div>
+                        <div class="col-3">
+                            <span>
+                                Choose number guests per room:
+                            </span>
+                            {# form.guests.label_tag  #}
+                            {{form.guests}}
+                        </div>
 
-
-                    <div class="col-md-2 col-sm-12 align-self-center">
-                        <button class="button search-button">
-                            Find room
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        
-        <div class="rooms row ml-1">
-            {% for room in available_rooms %}
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card">
-                    <img
-                        class="card-img-top"
-                        src="{{ room.mainFoto.url }}"
-                        alt="Card image cap"
-                    />
-
-                    <div
-                        data-id="{{ room.id }}"
-                        class="card-body"
-                        method="post"
-                    >
-                        {% csrf_token %}
-
-                        <h5 class="card-title">{{ room.name }}</h5>
-                        <p class="card-text">
-                            Up to {{ room.capacity }} guests
-                        </p>
-                        <div class="d-flex justify-content-between">
-                            <p class="price mr-4">price</p>
-
-                            {% if user.is_authenticated %}
-                            <button href="#" class="button booking ml-5">
-                                Select
+                        <div class="col-md-2 col-sm-12 align-self-center">
+                            <button class="button search-button">
+                                Find room
                             </button>
-                            {% else %}
-                            <button
-                                href="#"
-                                class="button search-button unauthenticated ml-5"
-                            >
-                                Sign in
-                            </button>
+                        </div>
+                    </div>
+            </div>
 
-                            {% endif %}
+            <div class="rooms row ml-1">
+                {% for room in available_rooms %}
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card">
+                        <img
+                            class="card-img-top"
+                            src="{{room.mainFoto.url}}"
+                            alt="Card image cap"
+                        />
+
+                        <div
+                            class="card-body"
+                        >
+                            <h5 class="card-title">
+                                {{room.name}}
+                            </h5>
+                            <p class="card-text">
+                                Up to {{room.capacity}} guests
+                            </p>
+                            <div class="row">
+                                <div class="col-5">
+                                    <p >
+                                         <strong class="price">{{room.price}}</strong> <br>  per night
+                                    </p>
+                                </div>
+
+                                {% if user.is_authenticated %}
+                                <button class="button booking"  value="{{room.id}}"
+                                  name="room_id" type = "submit"
+                                 >
+                                    Select
+                                </button>
+                                {% else %}
+                                <button
+                                    
+                                    class="button search-button unauthenticated ml-3" value="{{room.id}}"
+                                >
+                                    Sign in
+                                </button>
+
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
 
-            <div class="sign-message hide p-1">
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="p-5">
-                    You must be logged in for booking!<br />
-                    Please, <a href="{% url 'login' %}">Sign in</a> or
-                    <a href="{% url 'registration' %}" title="Register"
-                        >Register</a
-                    >
+                <div class="sign-message hide p-1">
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <div class="p-5">
+                        You must be logged in for booking!
+                        <br />
+                        Please,
+                        <a href="{% url 'login' %}">
+                            Sign in
+                        </a>
+                        or
+                        <a href="{% url 'registration' %}" title="Register">
+                            Register
+                        </a>
+                    </div>
                 </div>
             </div>
+    </form>
 
+    <div class="book-message hide p-1">
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">
+                &times;
+            </span>
+        </button>
+        <div class="p-5">
+            Before your reservation is complete, you can order transfer.
 
+            <br />
         </div>
     </div>
-</div>
-
-
-<script id="expressions-template" type="text/x-handlebars-template">
-
-</script>
-
 {% endblock %}

@@ -13,7 +13,9 @@ from django.contrib import messages
 from django import forms
 from django.http import JsonResponse
 
+
 now = str(datetime.date.today())
+tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
 
 def deserialize(data):
     return json.dumps(
@@ -29,7 +31,7 @@ class BookingForm(forms.ModelForm):
         fields = ('arrival', 'departure', "guests")
         widgets = {
             'arrival': forms.DateInput(attrs={'type': 'date', "value": now, "min": now }),
-            'departure': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
+            'departure': forms.DateInput(attrs={'type': 'date', "value": tomorrow, "min": tomorrow}),
         }
 
 
@@ -45,13 +47,10 @@ class TransferForm(forms.ModelForm):
             'flightNumber': "Flight number",
             'arrivalDate': "Arrival date",
             'arrivalTime': "Arrival time",
-            'airlineCompany': "Airline company",
-            "additionalInformation": "Additional information"
         }
         widgets = {
             'arrivalDate': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
             "arrivalTime": forms.TimeInput(attrs={'type': 'time'}, format='%H:%M %p',),
-            "additionalInformation": forms.Textarea(attrs={'class': 'form-control', "rows": "5"},)
         }
 
 class CategoryListView(ListView):
@@ -86,12 +85,11 @@ class IndexView(View):
     # request.session["departure"] = form.cleaned_data["departure"]
 
 class BookingView(View):
-
+    """renders room search page"""
     template_name = "reservations/booking.html"
 
     def get(self, request, *args, **kwargs):
         form = BookingForm(request.GET)
-        transferForm = TransferForm()
         if not form.is_valid():
 
         #come by nav link and form is empty
@@ -103,7 +101,7 @@ class BookingView(View):
                 available_rooms = RoomCategory.objects.filter(
                     capacity__gte=number_of_guests)
                 return render(request, self.template_name, {
-                    "form": form, "available_rooms": available_rooms
+                    "form": form, "available_rooms": available_rooms,
             })
 
             except TypeError:
@@ -111,7 +109,7 @@ class BookingView(View):
                 form = BookingForm()
                 available_rooms = RoomCategory.objects.all()
                 return render(request, self.template_name, {
-                    "form": form, "available_rooms": available_rooms
+                    "form": form, "available_rooms": available_rooms, 
             })
 
         # case - come from index
@@ -119,22 +117,39 @@ class BookingView(View):
         # save user search
         request.session['form_data'] = deserialize(form.cleaned_data)
 
-        return render(request, self.template_name, {'form': form, "available_rooms": available_rooms, "transferForm": transferForm})
+        return render(request, self.template_name, {'form': form, "available_rooms": available_rooms})
 
 
     def post(self, request, *args, **kwargs):
-        available_rooms = RoomCategory.objects.all()
+        form = BookingForm(request.POST)
+        # get button value attr where category id is stored
+        room_id = int(request.POST.get("room_id", ""))
+        order = form.save(commit=False)
+        order.user = request.user
+        room = Room.objects.filter(category=room_id).first()
+        order.room = room
+        # calculate the price
+        delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
+        print(delta.days)
+        category = get_object_or_404(RoomCategory, pk=room_id)
+        total_price = getattr(category, "price")*delta.days
+        order.calc_price = total_price
 
-        return render(request, self.template_name, {
-            "form": form, "available_rooms": available_rooms
-        })
-        
+        order.save()
+
+        return redirect("confirm")
 
 
+class ConfirmView(View):
+    """renders order confirm page"""
+    template_name = "reservations/confirm.html"
+    transferForm = TransferForm()
+
+    def get(self, request, *args, **kwargs):
+        transferForm = TransferForm()
+        return render(request, self.template_name, {"transferForm": self.transferForm})
 
 
-    # arrival = request.GET['arrival']
-    # arrival = request.GET.get('arrival')
 
 
 def booking_submit(request):
@@ -153,3 +168,6 @@ def booking_submit(request):
     # json_data = json.dumps(categories)
     # return HttpResponse(json_data, content_type="application/json")
     return JsonResponse({"categories": list(categories)})
+
+
+# request.POST.get("id_value", "")
