@@ -8,23 +8,27 @@ Confirmation {% endblock %}
 <div class="container mt-5">
         
     <div class="indent">
+       
+        <a class="back" href="#">
+            Back to room selection
+        </a>
+        <div>
+            You are booking {{ booking.room.category}} room from {{booking.arrival}} to {{booking.departure}} 
+            at the total price {{booking.calc_price}}
         </div>
+        <form method = "POST" class="transfer">
+            {% csrf_token %}
+            <strong>
+                Before your reservation is complete, you can order transfer.
+            </strong>
 
-    <a class="back" href="#">
-        Back to room selection
-    </a>
-    <div class="transfer">
-        <h2>
-            Before your reservation is complete, you can order transfer.
-        </h2>
-
-        {{transferForm.as_p}}
-        {{transferForm.airport.label_tag}}
-        <button method="POST" href="#" class="button search-button ml-5">
-            Book
-        </button>
+            {{transferForm.as_p}}
+            {{transferForm.airport.label_tag}}
+            <button type = "submit" class="button confirm">
+                Book
+            </button>
+        </form>
     </div>
-    </div>
-    
+     </div>
 </div>
 {% endblock %}

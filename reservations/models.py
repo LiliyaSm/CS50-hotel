@@ -27,10 +27,10 @@ class RoomFacility(models.Model):
 
 class RoomCategory(models.Model):
     CATEGORY_CHOICES = (
-        ('Single', 'Single'),
-        ('Double', 'Double/twin'),
-        ('Superior', 'Superior'),
-        ('Suite', 'Suite'),
+        ('single', 'Single'),
+        ('double', 'Double/twin'),
+        ('superior', 'Superior'),
+        ('suite', 'Suite'),
         ('SPA', 'Suite SPA'),
     )
 
@@ -74,8 +74,8 @@ class Booking(models.Model):
     confirmed = models.BooleanField(default=False)
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name='ordered_room')
-    transfer = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name='transfer', blank=True, null=True)
+    transfer = models.OneToOneField(
+        Transfer, on_delete=models.CASCADE, related_name='transfer', blank=True, null=True)
 
     arrival = models.DateField('arrival',
                                validators=[MinValueValidator(limit_value=date.today)])

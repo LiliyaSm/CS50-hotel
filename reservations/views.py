@@ -36,10 +36,13 @@ class BookingForm(forms.ModelForm):
 
 
 class TransferForm(forms.ModelForm):
+
     class Meta:
 
         model = Transfer
         fields = ("__all__")
+
+
         help_texts = {
             "flightNumber": "Including letters and digits"
         }
@@ -48,11 +51,12 @@ class TransferForm(forms.ModelForm):
             'arrivalDate': "Arrival date",
             'arrivalTime': "Arrival time",
         }
+
         widgets = {
             'arrivalDate': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
-            "arrivalTime": forms.TimeInput(attrs={'type': 'time'}, format='%H:%M %p',),
-        }
-
+            "arrivalTime": forms.TimeInput(attrs={'type': 'time'}, format='%H:%M',),
+        }        
+        
 class CategoryListView(ListView):
 
     # Add in a QuerySet of all the categories
@@ -114,30 +118,34 @@ class BookingView(View):
 
         # case - come from index
         available_rooms = RoomCategory.objects.all()        
-        # save user search
+        # save user search in session in JSON format
         request.session['form_data'] = deserialize(form.cleaned_data)
 
         return render(request, self.template_name, {'form': form, "available_rooms": available_rooms})
 
 
     def post(self, request, *args, **kwargs):
-        form = BookingForm(request.POST)
-        # get button value attr where category id is stored
-        room_id = int(request.POST.get("room_id", ""))
-        order = form.save(commit=False)
-        order.user = request.user
-        room = Room.objects.filter(category=room_id).first()
-        order.room = room
-        # calculate the price
-        delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
-        print(delta.days)
-        category = get_object_or_404(RoomCategory, pk=room_id)
-        total_price = getattr(category, "price")*delta.days
-        order.calc_price = total_price
 
-        order.save()
+        if BookingForm(request.POST).is_valid():
+            booking_entry, created = Booking.objects.get_or_create(
+                    user=request.user, confirmed=False)
 
-        return redirect("confirm")
+            # get button value attr where category id is stored
+            room_id = int(request.POST.get("room_id", ""))
+            form = BookingForm(
+                request.POST, instance=booking_entry)
+            order = form.save(commit=False)
+            order.user = request.user
+            category = get_object_or_404(RoomCategory, pk=room_id)
+            room = Room.objects.filter(category=category).first()
+            order.room = room
+            # calculate the price
+            delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
+            total_price = getattr(category, "price")*delta.days
+            order.calc_price = total_price
+
+            order.save()
+            return redirect("confirm")
 
 
 class ConfirmView(View):
@@ -147,7 +155,19 @@ class ConfirmView(View):
 
     def get(self, request, *args, **kwargs):
         transferForm = TransferForm()
-        return render(request, self.template_name, {"transferForm": self.transferForm})
+        booking = get_object_or_404(Booking, user=request.user, confirmed=False)
+        return render(request, self.template_name, {"booking": booking, "transferForm": self.transferForm})
+
+    def post(self, request, *args, **kwargs):
+        transfer_confirm = TransferForm(request.POST)
+        if transfer_confirm.is_valid():
+            transfer_confirm = transfer_confirm.save()
+        booking = get_object_or_404(
+            Booking, user=request.user, confirmed=False)
+        booking.transfer = transfer_confirm
+        booking.confirmed = True
+        booking.save()
+        return redirect("index")
 
 
 
@@ -168,6 +188,3 @@ def booking_submit(request):
     # json_data = json.dumps(categories)
     # return HttpResponse(json_data, content_type="application/json")
     return JsonResponse({"categories": list(categories)})
-
-
-# request.POST.get("id_value", "")
