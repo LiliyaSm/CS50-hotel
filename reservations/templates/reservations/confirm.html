@@ -8,24 +8,33 @@ Confirmation {% endblock %}
 <div class="container mt-5">
         
     <div class="indent">
-       
-        <a class="back" href="#">
+   
+        <a class="back" href="{% url 'booking' %}">
             Back to room selection
         </a>
-        <div>
-            You are booking {{ booking.room.category}} room from {{booking.arrival}} to {{booking.departure}} 
-            at the total price {{booking.calc_price}}
-        </div>
-        <form method = "POST" class="transfer">
+        <h2 class="text-center">Order confirmation</h2>
+        <h5 class="mb-3">
+            Please, confirm the order:
+        </h5>
+        <div class="mb-3"> You are booking {{ booking.room.category}} room from {{booking.arrival}} to {{booking.departure}} 
+            at the total price<strong> {{booking.calc_price}}</strong></div>
+        <h4>
+        </h4>
+        <label for="transfer">
+                <strong>
+                I want to order a transfer from airport
+                </strong>
+        </label>
+        <input type="checkbox" name="" id="transfer">
+        <form method = "POST" >
             {% csrf_token %}
-            <strong>
-                Before your reservation is complete, you can order transfer.
-            </strong>
 
-            {{transferForm.as_p}}
-            {{transferForm.airport.label_tag}}
+            <div class="transfer">
+                {{transferForm.as_p}}
+                {{transferForm.airport.label_tag}}
+            </div>
             <button type = "submit" class="button confirm">
-                Book
+                Confirm
             </button>
         </form>
     </div>

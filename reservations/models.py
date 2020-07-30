@@ -21,8 +21,8 @@ class RoomFacility(models.Model):
         return f"{self.item}"
 
     class Meta:
-       verbose_name = 'Room Facility'
-       verbose_name_plural = 'Room Facilities'
+       verbose_name = 'Room facility'
+       verbose_name_plural = 'Room facilities'
 
 
 class RoomCategory(models.Model):
@@ -62,11 +62,6 @@ class Room(models.Model):
         return f"{self.roomNumber} {self.category}"
 
 
-class Transfer(models.Model):
-    arrivalDate = models.DateField('arrival_date',
-                                    validators=[MinValueValidator(limit_value=date.today)])
-    arrivalTime = models.TimeField()
-    flightNumber = models.CharField(max_length=100)
 
 class Booking(models.Model):
     user = models.ForeignKey(
@@ -74,9 +69,6 @@ class Booking(models.Model):
     confirmed = models.BooleanField(default=False)
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name='ordered_room')
-    transfer = models.OneToOneField(
-        Transfer, on_delete=models.CASCADE, related_name='transfer', blank=True, null=True)
-
     arrival = models.DateField('arrival',
                                validators=[MinValueValidator(limit_value=date.today)])
     departure = models.DateField('departure',
@@ -88,7 +80,18 @@ class Booking(models.Model):
     calc_price = models.DecimalField(
         max_digits=8, decimal_places=2, default=Decimal(0))
 
+    def __str__(self):
+        return f"{self.id}"
 
+
+class Transfer(models.Model):
+    arrivalDate = models.DateField('arrival date',
+                                   validators=[MinValueValidator(limit_value=date.today)], blank=True, null=True)
+    arrivalTime = models.TimeField("arrival time", blank=True, null=True)
+    flightNumber = models.CharField(
+        "flight number", max_length=100, blank=True, null=True)
+    order = models.OneToOneField(
+        Booking, on_delete=models.CASCADE, related_name='transfer')
 
 
 class RoomImage(models.Model):

@@ -9,10 +9,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 import datetime
 from django.views.generic.list import ListView
 from django.views.generic import DetailView, View
-from django.contrib import messages
 from django import forms
 from django.http import JsonResponse
-
 
 now = str(datetime.date.today())
 tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
@@ -38,10 +36,8 @@ class BookingForm(forms.ModelForm):
 class TransferForm(forms.ModelForm):
 
     class Meta:
-
         model = Transfer
-        fields = ("__all__")
-
+        fields = ('arrivalDate', 'arrivalTime', 'flightNumber')
 
         help_texts = {
             "flightNumber": "Including letters and digits"
@@ -56,7 +52,7 @@ class TransferForm(forms.ModelForm):
             'arrivalDate': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
             "arrivalTime": forms.TimeInput(attrs={'type': 'time'}, format='%H:%M',),
         }        
-        
+
 class CategoryListView(ListView):
 
     # Add in a QuerySet of all the categories
@@ -127,13 +123,19 @@ class BookingView(View):
     def post(self, request, *args, **kwargs):
 
         if BookingForm(request.POST).is_valid():
-            booking_entry, created = Booking.objects.get_or_create(
-                    user=request.user, confirmed=False)
+            try:
+                # if previous order wasn't finished
+                booking_entry = Booking.objects.get(
+                        user=request.user, confirmed=False)
+                form = BookingForm(
+                    request.POST, instance=booking_entry)
+            except Booking.DoesNotExist:
+                form = BookingForm(
+                    request.POST)
 
             # get button value attr where category id is stored
             room_id = int(request.POST.get("room_id", ""))
-            form = BookingForm(
-                request.POST, instance=booking_entry)
+
             order = form.save(commit=False)
             order.user = request.user
             category = get_object_or_404(RoomCategory, pk=room_id)
@@ -154,21 +156,20 @@ class ConfirmView(View):
     transferForm = TransferForm()
 
     def get(self, request, *args, **kwargs):
-        transferForm = TransferForm()
         booking = get_object_or_404(Booking, user=request.user, confirmed=False)
         return render(request, self.template_name, {"booking": booking, "transferForm": self.transferForm})
 
     def post(self, request, *args, **kwargs):
-        transfer_confirm = TransferForm(request.POST)
-        if transfer_confirm.is_valid():
-            transfer_confirm = transfer_confirm.save()
         booking = get_object_or_404(
             Booking, user=request.user, confirmed=False)
-        booking.transfer = transfer_confirm
+        transfer_confirm = TransferForm(request.POST)
+        if transfer_confirm.is_valid():
+            transfer_confirm = transfer_confirm.save(commit=False)
+            transfer_confirm.order = booking
+            transfer_confirm.save()
         booking.confirmed = True
         booking.save()
         return redirect("index")
-
 
 
 
@@ -178,6 +179,8 @@ def booking_submit(request):
     arrival = request.GET.get("arrival", "")
     departure = request.GET.get("departure", "")
     number_of_guests = int(request.GET.get("guests", ""))
+    request.session['form_data'] = f"""{{\n 'arrival': '{arrival}',\n 'departure': '{departure}',
+                                       'guests': {number_of_guests}\n}}"""
 
     # flat = True to get a plain list instead of a list of tuples
     categories = RoomCategory.objects.filter(
@@ -188,3 +191,4 @@ def booking_submit(request):
     # json_data = json.dumps(categories)
     # return HttpResponse(json_data, content_type="application/json")
     return JsonResponse({"categories": list(categories)})
+                                                         

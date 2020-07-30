@@ -5,50 +5,43 @@ Hotel {% endblock %}
 
 {% block body %}
 
-
-<!-- <ul>
-    {% for entry in entries %}
-    <a  href="{% url 'entry' entry %}"><li>{{ entry }}</li></a>
-    {% endfor %}
-</ul> -->
-
 <div class = "class="container-fluid>
-<div class="tl-fixed-banner">
-    <div class="swiper-container">
-        <!-- Additional required wrapper -->
-        <div class="swiper-wrapper">
-            <!-- Slides -->
-            <div
-                class="swiper-slide relative"
-                style="background-image: url({% static 'img/swiper1.jpg' %});"
-            >
-                <h1>Book online</h1>
-                <div class="after"></div>
-            </div>
-            <div
-                class="swiper-slide relative"
-                style="background-image: url({% static 'img/swiper2.jpg' %});"
-            >
-                <h1>Best price</h1>
-                <div class="after"></div>
-            </div>
-            <div
-                class="swiper-slide relative"
-                style="background-image: url({% static 'img/swiper3.jpg' %});"
-            >
-                <h1>Comfortable accomodation</h1>
-                <div class="after"></div>
-            </div>
-        </div>
-        <!-- If we need pagination -->
-        <div class="swiper-pagination"></div>
+    <div class="tl-fixed-banner">
 
-        <!-- If we need navigation buttons -->
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-    </div>
-</div>
-    
+        <div class="swiper-container">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <div
+                    class="swiper-slide relative"
+                    style="background-image: url({% static 'img/swiper1.jpg' %});"
+                >
+                    <h1>Book online</h1>
+                    <div class="after"></div>
+                </div>
+                <div
+                    class="swiper-slide relative"
+                    style="background-image: url({% static 'img/swiper2.jpg' %});"
+                >
+                    <h1>Best price</h1>
+                    <div class="after"></div>
+                </div>
+                <div
+                    class="swiper-slide relative"
+                    style="background-image: url({% static 'img/swiper3.jpg' %});"
+                >
+                    <h1>Comfortable accomodation</h1>
+                    <div class="after"></div>
+                </div>
+            </div>
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    </div>    
 </div>
 
     <div class="search-wrapper ">
@@ -75,8 +68,8 @@ Hotel {% endblock %}
                 <!-- <input type="date" min='2020-01-01' id="to" name="to" > -->
             </div> 
 
-            <div class="hide">
-                {{ form.guests }}
+            <div>
+                {{ form.guests.as_hidden  }}
             </div>
 
                 

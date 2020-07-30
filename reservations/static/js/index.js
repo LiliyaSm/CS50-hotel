@@ -194,6 +194,25 @@ $(document).ready(function () {
     $(".sign-message .close").click(function () {
         $(this).parent(".sign-message").addClass("hide");
     });
+
+    $(".transfer").hide();
+
+    $("#transfer").click(function () {
+        if ($(this).is(":checked")) {
+                $(".transfer").show()
+                $(".transfer input").each( function(){
+                    $(this).prop('required', true);            
+            });
+        }
+        else {
+            $(".transfer").hide()
+            $(".transfer input").each(function () {
+                $(this).prop("required", false);
+            });
+        };
+    });
+
+
 });
 
 $(window).on("load resize", function () {
