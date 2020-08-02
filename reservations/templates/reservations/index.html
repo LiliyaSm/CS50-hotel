@@ -13,33 +13,27 @@ Hotel {% endblock %}
             <div class="swiper-wrapper">
                 <!-- Slides -->
                 <div
-                    class="swiper-slide relative"
+                    class="swiper-slide"
                     style="background-image: url({% static 'img/swiper1.jpg' %});"
                 >
                     <h1>Book online</h1>
                     <div class="after"></div>
                 </div>
                 <div
-                    class="swiper-slide relative"
+                    class="swiper-slide"
                     style="background-image: url({% static 'img/swiper2.jpg' %});"
                 >
                     <h1>Best price</h1>
                     <div class="after"></div>
                 </div>
                 <div
-                    class="swiper-slide relative"
+                    class="swiper-slide"
                     style="background-image: url({% static 'img/swiper3.jpg' %});"
                 >
                     <h1>Comfortable accomodation</h1>
                     <div class="after"></div>
                 </div>
             </div>
-            <!-- If we need pagination -->
-            <div class="swiper-pagination"></div>
-
-            <!-- If we need navigation buttons -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
         </div>
     </div>    
 </div>
@@ -84,22 +78,4 @@ Hotel {% endblock %}
     </div>
 </div>
 
-
-
-  <!-- Initialize Swiper -->
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script>
-    var swiper = new Swiper(".swiper-container", {
-        spaceBetween: 30,
-        effect: "fade",
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-    });
-</script>
 {% endblock %}

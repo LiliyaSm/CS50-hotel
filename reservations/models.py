@@ -85,6 +85,7 @@ class Booking(models.Model):
 
 
 class Transfer(models.Model):
+    checked = models.BooleanField(default=False)
     arrivalDate = models.DateField('arrival date',
                                    validators=[MinValueValidator(limit_value=date.today)], blank=True, null=True)
     arrivalTime = models.TimeField("arrival time", blank=True, null=True)

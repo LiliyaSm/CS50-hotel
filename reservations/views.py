@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.shortcuts import redirect, render, get_object_or_404
-# from django.db.models import Q
+from django.db.models import Q
 from django.http import HttpResponse
 from .models import Booking, Room, RoomCategory, RoomImage, Transfer
 import json
@@ -37,7 +37,7 @@ class TransferForm(forms.ModelForm):
 
     class Meta:
         model = Transfer
-        fields = ('arrivalDate', 'arrivalTime', 'flightNumber')
+        fields = ('arrivalDate', 'arrivalTime', 'flightNumber', "checked")
 
         help_texts = {
             "flightNumber": "Including letters and digits"
@@ -51,6 +51,7 @@ class TransferForm(forms.ModelForm):
         widgets = {
             'arrivalDate': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
             "arrivalTime": forms.TimeInput(attrs={'type': 'time'}, format='%H:%M',),
+            "checked": forms.CheckboxInput(),
         }        
 
 class CategoryListView(ListView):
@@ -81,9 +82,6 @@ class IndexView(View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {'form': self.form})
 
-    # request.session["arrival"] = form.cleaned_data["arrival"]
-    # request.session["departure"] = form.cleaned_data["departure"]
-
 class BookingView(View):
     """renders room search page"""
     template_name = "reservations/booking.html"
@@ -91,19 +89,9 @@ class BookingView(View):
     def get(self, request, *args, **kwargs):
         form = BookingForm(request.GET)
         if not form.is_valid():
-
-        #come by nav link and form is empty
             try:
                 data = eval(request.session.get('form_data'))
                 form = BookingForm(initial=data)
-                # make search
-                number_of_guests = int(form.initial["guests"])
-                available_rooms = RoomCategory.objects.filter(
-                    capacity__gte=number_of_guests)
-                return render(request, self.template_name, {
-                    "form": form, "available_rooms": available_rooms,
-            })
-
             except TypeError:
                 #if form empty display all available rooms (first search)
                 form = BookingForm()
@@ -111,9 +99,20 @@ class BookingView(View):
                 return render(request, self.template_name, {
                     "form": form, "available_rooms": available_rooms, 
             })
-
+        arrival = form.cleaned_data["arrival"]
+        departure = form.cleaned_data["departure"]
+        number_of_guests = form.cleaned_data["guests"]
         # case - come from index
-        available_rooms = RoomCategory.objects.all()        
+        rooms = Room.objects.exclude(
+            Q(ordered_room__arrival__lt=departure) & Q(ordered_room__departure__gte=departure) |
+            Q(ordered_room__arrival__lte=arrival) & Q(ordered_room__departure__gt=arrival) |
+            Q(ordered_room__arrival__gte=arrival) & Q(
+                ordered_room__departure__lte=departure), ordered_room__confirmed=True
+        )
+
+        available_rooms = RoomCategory.objects.filter(
+            capacity__gte=number_of_guests, room__in=rooms).distinct()
+
         # save user search in session in JSON format
         request.session['form_data'] = deserialize(form.cleaned_data)
 
@@ -139,7 +138,14 @@ class BookingView(View):
             order = form.save(commit=False)
             order.user = request.user
             category = get_object_or_404(RoomCategory, pk=room_id)
-            room = Room.objects.filter(category=category).first()
+            rooms = Room.objects.exclude(
+                Q(ordered_room__arrival__lt=order.departure) & Q(ordered_room__departure__gte=order.departure) |
+                Q(ordered_room__arrival__lte=order.arrival) & Q(ordered_room__departure__gt=order.arrival) |
+                Q(ordered_room__arrival__gte=order.arrival) & Q(
+                    ordered_room__departure__lte=order.departure), ordered_room__confirmed=True
+            )
+
+            room = rooms.filter(category=category).first()
             order.room = room
             # calculate the price
             delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
@@ -163,10 +169,31 @@ class ConfirmView(View):
         booking = get_object_or_404(
             Booking, user=request.user, confirmed=False)
         transfer_confirm = TransferForm(request.POST)
-        if transfer_confirm.is_valid():
+        if transfer_confirm.is_valid() and transfer_confirm.cleaned_data["checked"]:
             transfer_confirm = transfer_confirm.save(commit=False)
             transfer_confirm.order = booking
             transfer_confirm.save()
+        # make sure that room is still available
+        category = get_object_or_404(RoomCategory, pk=booking.room.id)
+
+        rooms = Room.objects.exclude(
+            Q(ordered_room__arrival__lt=order.departure) & Q(ordered_room__departure__gte=order.departure) |
+            Q(ordered_room__arrival__lte=order.arrival) & Q(ordered_room__departure__gt=order.arrival) |
+            Q(ordered_room__arrival__gte=order.arrival) & Q(
+                ordered_room__departure__lte=order.departure), ordered_room__confirmed=True
+        )
+
+        room = rooms.filter(category=category).first()
+
+
+        if booking.room is not room:
+            if room:
+                booking.room = room
+            else:
+                # there is no free rooms
+                return redirect("booking")
+
+
         booking.confirmed = True
         booking.save()
         return redirect("index")
@@ -182,12 +209,18 @@ def booking_submit(request):
     request.session['form_data'] = f"""{{\n 'arrival': '{arrival}',\n 'departure': '{departure}',
                                        'guests': {number_of_guests}\n}}"""
 
+# find available rooms
+    rooms = Room.objects.exclude(
+        Q(ordered_room__arrival__lt=departure) & Q(ordered_room__departure__gte=departure) |
+        Q(ordered_room__arrival__lte=arrival) & Q(ordered_room__departure__gt=arrival) |
+        Q(ordered_room__arrival__gte=arrival) & Q(ordered_room__departure__lte=departure), ordered_room__confirmed=True
+        )
+
     # flat = True to get a plain list instead of a list of tuples
     categories = RoomCategory.objects.filter(
-        capacity__gte=number_of_guests).values_list('id', flat=True)
+        capacity__gte=number_of_guests, room__in=rooms).values_list('id', flat=True).distinct()
 
-
-    print(categories)
+    print(rooms)
     # json_data = json.dumps(categories)
     # return HttpResponse(json_data, content_type="application/json")
     return JsonResponse({"categories": list(categories)})

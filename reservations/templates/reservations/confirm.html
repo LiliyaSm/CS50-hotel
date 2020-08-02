@@ -20,18 +20,29 @@ Confirmation {% endblock %}
             at the total price<strong> {{booking.calc_price}}</strong></div>
         <h4>
         </h4>
-        <label for="transfer">
-                <strong>
-                I want to order a transfer from airport
-                </strong>
-        </label>
-        <input type="checkbox" name="" id="transfer">
         <form method = "POST" >
             {% csrf_token %}
-
+        <div>
+            <label for="checked">
+                    <strong>
+                    I want to order a transfer from airport
+                    </strong>
+            </label>
+            {{transferForm.checked}}    
+        </div>
             <div class="transfer">
-                {{transferForm.as_p}}
-                {{transferForm.airport.label_tag}}
+                <div>
+                    {{transferForm.arrivalDate.label_tag}}
+                    {{transferForm.arrivalDate}}
+                </div>
+                <div>
+                    {{transferForm.arrivalTime.label_tag}}
+                    {{transferForm.arrivalTime}}
+                </div>
+                <div>
+                    {{transferForm.flightNumber.label_tag}}
+                    {{transferForm.flightNumber}}
+                </div>
             </div>
             <button type = "submit" class="button confirm">
                 Confirm
