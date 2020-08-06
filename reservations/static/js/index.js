@@ -23,7 +23,31 @@ function formatDate(date) {
     let year = date.getFullYear();
     return year + "-" + month + "-" + day ;
 } 
-        
+
+function getData() {
+const arrival = $("#id_arrival").val();
+const departure = $("#id_departure").val();
+const guests = $("#id_guests").val();
+$.get(
+    "booking_submit",
+    { arrival: arrival, departure: departure, guests: guests },
+    function (response) {
+        const cards = $(".card-body");
+        cards.closest(".card").parent().removeClass("hide");
+        cards.each(function () {
+            let id = parseInt(
+                $(this).find("button").attr("value")
+            );
+            if (!response.categories.includes(id)) {
+                $(this)
+                    .closest(".card")
+                    .parent()
+                    .addClass("hide");
+            }
+        });
+    }
+);}
+
 function Slideshow() {
 // shows slides on index page
     $(".swiper-wrapper > div:gt(0)").hide();
@@ -84,23 +108,8 @@ $(document).ready(function () {
 
     $(".search-button").on("click", function (e) {
         e.preventDefault();
-        const arrival = $("#id_arrival").val();
-        const departure = $("#id_departure").val();
-        const guests = $("#id_guests").val();
-        $.get(
-            "booking_submit",
-            { arrival: arrival, departure: departure, guests: guests },
-            function (response) {
-                const cards = $(".card-body");
-                cards.closest(".card").parent().removeClass("hide");
-                cards.each(function () {
-                    let id = parseInt($(this).find("button").attr("value"));
-                    if (!response.categories.includes(id)) {
-                        $(this).closest(".card").parent().addClass("hide");
-                    }
-                });
-            }
-        );
+        getData();
+
     });
     
     //show side nav menu
@@ -168,6 +177,10 @@ $(document).ready(function () {
 
     if (window.location.pathname == "/") {
         Slideshow();
+    }
+    
+    if (window.location.pathname == "/booking") {
+        getData();
     }
 
     $("#id_arrival").on("change", function () {

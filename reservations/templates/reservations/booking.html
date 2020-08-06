@@ -34,7 +34,7 @@ Booking {% endblock %} {% block body %}
 
             <div class="rooms row ml-1">
                 {% for room in available_rooms %}
-                <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12 hide">
                     <div class="card">
                         <a class = "category" href="{% url 'room-detail'  room %}">
                         <img
