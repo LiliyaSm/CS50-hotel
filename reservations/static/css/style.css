@@ -184,7 +184,7 @@ ul.navbar-nav {
     margin: 0 auto;
     font-weight: bold;
     width: 100%;
-    padding: 24px 1px 24px 1px;
+    padding: 24px 10px 24px 1px;
 }
 
 .button {
@@ -199,9 +199,7 @@ ul.navbar-nav {
     cursor: pointer;
 }
 
-.button:hover {
-    background: #b93e5b;
-}
+
 .button:focus {
     outline: 0;
 }
@@ -322,6 +320,17 @@ footer {
 .transparent {
     background: transparent;
     border: none;
+}
+button:disabled,
+button[disabled] {
+  border: 1px solid #999999;
+  color: #666666;
+  background-image: linear-gradient(to top, #a58f94, #cccccc);
+}
+
+.button:hover:enabled,
+.active  {
+    background: #b93e5b;
 }
 @media (max-width: 767px) {
     header .logo {

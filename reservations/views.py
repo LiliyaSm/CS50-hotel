@@ -17,6 +17,7 @@ now = str(datetime.date.today())
 tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
 
 def deserialize(data):
+    # converts json data to string
     return json.dumps(
         data,
         sort_keys=True,
@@ -55,14 +56,38 @@ class TransferForm(forms.ModelForm):
             "checked": forms.CheckboxInput(),
         }        
 
-class CategoryListView(ListView):
 
-    # Add in a QuerySet of all the categories
+def execute_query(queryOrder):
+
+    # Dictionary params not supported with SQLite
+
+    return Room.objects.raw('''select rooms.id
+                from "reservations_room" as rooms
+                where
+                    rooms.category_id =  %s and
+                    rooms.id not in(
+                        select rooms.id
+                        from "reservations_room" as rooms
+                        left join "reservations_booking" as bookings on rooms.id=bookings.room_id
+                        where rooms.category_id = %s and
+                            (bookings.confirmed = 1 and
+                            (((bookings.arrival < %s AND bookings.departure >= %s) OR
+                            (bookings.arrival <= %s AND bookings.departure > %s) OR
+                            (bookings.arrival >= %s AND bookings.departure <= %s))))
+                        group by rooms.id)  ''',
+                     [queryOrder["category"], queryOrder["category"], queryOrder["departure"], queryOrder["departure"],
+                      queryOrder["arrival"], queryOrder["arrival"],
+                      queryOrder['arrival'], queryOrder["departure"]
+                      ])
+
+class CategoryListView(ListView):
+    """creates a list of all existing room categories"""
     queryset = RoomCategory.objects.all()
     template_name = 'reservations/rooms.html'
 
 
 class CategoryDetail(DetailView):
+    """creates a detailed view of chosen room category"""
 
     context_object_name = 'name'
     queryset = RoomCategory.objects.all()
@@ -111,7 +136,7 @@ class BookingView(View):
 
         if BookingForm(request.POST).is_valid():
             try:
-                # if previous order wasn't finished
+                # if previous order wasn't finished populate it with new data
                 booking_entry = Booking.objects.get(
                         user=request.user, confirmed=False)
                 form = BookingForm(
@@ -119,28 +144,31 @@ class BookingView(View):
             except Booking.DoesNotExist:
                 form = BookingForm(request.POST)
 
-            # get button value attr where category id is stored
+            # get button value of data attr where category "id" is stored
             room_id = int(request.POST.get("room_id", ""))
 
             order = form.save(commit=False)
             order.user = request.user
             category = get_object_or_404(RoomCategory, pk=room_id)
-            rooms = Room.objects.exclude(
-                Q(ordered_room__arrival__lt=order.departure) & Q(ordered_room__departure__gte=order.departure) |
-                Q(ordered_room__arrival__lte=order.arrival) & Q(ordered_room__departure__gt=order.arrival) |
-                Q(ordered_room__arrival__gte=order.arrival) & Q(
-                    ordered_room__departure__lte=order.departure), ordered_room__confirmed=True
-            )
+            queryOrder = {'category': category.id,
+                          'arrival': order.arrival, 'departure': order.departure}
 
-            room = rooms.filter(category=category).first()
-            order.room = room
-            # calculate the price
-            delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
-            total_price = getattr(category, "price")*delta.days
-            order.calc_price = total_price
+            #   find available rooms for booking in chosen category
+            rooms = execute_query(queryOrder)
+            if rooms:
+                room = rooms[0]
+                order.room = room
+                # calculate the price
+                delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
+                total_price = getattr(category, "price")*delta.days
+                order.calc_price = total_price
 
-            order.save()
-            return redirect("confirm")
+                order.save()
+                return redirect("confirm")
+            else:
+                # all rooms from showed category are occupied
+                return redirect("booking")
+
 
 
 class ConfirmView(View):
@@ -160,61 +188,24 @@ class ConfirmView(View):
             transfer_confirm = transfer_confirm.save(commit=False)
             transfer_confirm.order = order
             transfer_confirm.save()
+
         # make sure that room is still available
-        category = get_object_or_404(
-            RoomCategory, pk=order.room.category.id) 
-
-        # rooms_row = Room.objects.filter(category=category)
-
-        # rooms = rooms_row.filter(
-        #    Q(ordered_room__arrival__lt=order.departure) & Q(ordered_room__departure__gte=order.departure) |
-        #      Q(ordered_room__arrival__lte=order.arrival) & Q(ordered_room__departure__gt=order.arrival) |
-        #    Q(ordered_room__arrival__gte=order.arrival) & Q(
-        #        ordered_room__departure__lte=order.departure))
-        # rooms = rooms.filter(ordered_room__confirmed=True)
-        # room = Room.objects.exclude(rooms).first()
-
-
-        #query = Room.objects.all().annotate('id')
-        # query = (Room.objects.all()
-        #                      .values("id")
-        #                      .annotate(count = Count("id"))
-        #                      .having(~(
-        #                                 (Q(ordered_room__arrival__lt=order.departure) & Q(ordered_room__departure__gte=order.departure) |
-        #                                 Q(ordered_room__arrival__lte=order.arrival) & Q(ordered_room__departure__gt=order.arrival) |
-        #                                 Q(ordered_room__arrival__gte=order.arrival) & Q(
-        #                                     ordered_room__departure__lte=order.departure)) & Q(ordered_room__confirmed=True))
-        #                                     |
-        #                                 Q(ordered_room__isnull=True)))
+        category = get_object_or_404(RoomCategory, pk=order.room.category.id) 
 
         queryOrder = {'category': category.id, 'arrival': order.arrival, 'departure': order.departure}
-        # Dictionary params not supported with SQLite
-        query = Room.objects.raw('''select rooms.id
-                                 from "reservations_room" as rooms
-                                 left join "reservations_booking" as bookings on rooms.id=bookings.room_id
-                                 where rooms.category_id = %s and (bookings.confirmed = 1 AND 
-                                 (((bookings.arrival < %s AND bookings.departure >= %s) OR
-                                      (bookings.arrival <= %s AND bookings.departure > %s) OR
-                                      (bookings.arrival >= %s AND bookings.departure <= %s)))
-                                     OR bookings.id IS NULL OR bookings.confirmed = 0)
-
-                                group by rooms.id
-                                Having bookings.confirmed = 0 or bookings.confirmed is null''' ,                                    
-                                      [queryOrder["category"], queryOrder["departure"], queryOrder["departure"], 
-                                                                   queryOrder["arrival"], queryOrder["arrival"],
-                                                                   queryOrder['arrival'], queryOrder["departure"]
-                                     ])
+        query = execute_query(queryOrder)
 
         for r in query:
             print(r)
 
-
-        if order.room is not query[0]:
-            if query[0]:
+        # if chosen room is not available anymore, rewrite it with another room from the same category
+        
+        if query:
+            if order.room.id != query[0].id:            
                 order.room = query[0]
-            else:
-                # there is no free rooms
-                return redirect("booking")
+        else:
+            # there is no free rooms
+            return redirect("booking")
 
         order.confirmed = True
         order.save()
@@ -231,11 +222,11 @@ def booking_submit(request):
     request.session['form_data'] = f"""{{\n 'arrival': '{arrival}',\n 'departure': '{departure}',
                                        'guests': {number_of_guests}\n}}"""
 
-# find available rooms
+    # find available rooms
     queryOrder = {'category': number_of_guests,
                   'arrival': arrival, 'departure': departure}
     # Dictionary params not supported with SQLite
-    query = Room.objects.raw('''select rooms.id 
+    rooms = Room.objects.raw('''select rooms.id 
                 from "reservations_room" as rooms
                 left join "reservations_roomcategory" as categories on rooms.category_id=categories.id
                 where 
@@ -257,16 +248,7 @@ def booking_submit(request):
                               queryOrder['arrival'], queryOrder["departure"]
                               ])
 
+    categories = set(room.category.id for room in rooms)
 
-    # flat = True to get a plain list instead of a list of tuples
-    # categories = RoomCategory.objects.filter(
-    #     room__in=query).values_list('id', flat=True).distinct()
-    categories = set(q.category.id for q in query)
-    # for q in query:
-    #     print(q.category.id)
-
-    print(list(categories))
-    # json_data = json.dumps(categories)
-    # return HttpResponse(json_data, content_type="application/json")
     return JsonResponse({"categories": list(categories)})
                                                          
