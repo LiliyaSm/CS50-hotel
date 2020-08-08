@@ -108,6 +108,14 @@ class IndexView(View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {'form': self.form})
 
+
+class AboutView(View):
+    """rendering items on the main page"""
+    template_name = 'reservations/about.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
 class BookingView(View):
     """renders room search page"""
     template_name = "reservations/booking.html"

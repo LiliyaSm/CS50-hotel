@@ -10,7 +10,9 @@ urlpatterns = [
     path('rooms', views.CategoryListView.as_view(), name='rooms'),
     path('rooms/<slug:name>', views.CategoryDetail.as_view(), name='room-detail'),
     path('booking_submit', views.booking_submit, name='booking_submit'),
-    path('confirm', views.ConfirmView.as_view(), name='confirm'),]
+    path('confirm', views.ConfirmView.as_view(), name='confirm'),
+    path('about', views.AboutView.as_view(), name="about"),
+]
     
 # urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
