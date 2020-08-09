@@ -38,6 +38,7 @@ $.get(
             let id = parseInt(
                 $(this).find("button").attr("value")
             );
+            // if card id is not included in response, hide this card
             if (!response.categories.includes(id)) {
                 $(this)
                     .closest(".card")
@@ -45,6 +46,25 @@ $.get(
                     .addClass("hide");
             }
         });
+
+
+        // display info message if all cards with available rooms are hidden
+        let allHide=true
+        cards.each(function () {
+             if (!$(this).parent().parent().hasClass('hide')){
+                allHide = false;
+            }
+        })
+        if( allHide) {
+            // div is not already appended
+            if ($('.infoMsg').length === 0)
+                { $(".rooms").append(
+                "<div  class = 'infoMsg'><h4  class = 'text-center'> Nothing found, try another date or guests number</h4></div>"
+            );}
+        }
+        else {
+            $(".infoMsg").remove();
+        }
     }
 );}
 
@@ -105,10 +125,24 @@ $(document).ready(function () {
         },
     });
 
+    $("#tl-search-form input, #tl-search-form select").each(function () {
+        // when changing input fields add a new style to buttons
+        $(this).change(function() {
+            $(".button.booking").prop("disabled", true);
+            $(".button.booking").addClass("disabled");
+            $(".button.search-button").addClass("active");
+
+
+        })
+    });
 
     $(".search-button").on("click", function (e) {
         e.preventDefault();
         getData();
+        $(".button.booking").prop("disabled", false);
+        $(".button.booking").removeClass("disabled");
+        $(".button.search-button").removeClass("active");
+
 
     });
     
@@ -119,53 +153,6 @@ $(document).ready(function () {
         // hide overlay
         $(".overlay").removeClass("collapse");
     });
-
-
-    // $(".slides").on("setPosition", function () {
-    //     $(this).find(".slick-slide").height("auto");
-    //     var slickTrack = $(this).find(".slick-track");
-    //     var slickTrackHeight = $(slickTrack).height();
-    //     $(this)
-    //         .find(".slick-slide")
-    //         .css("height", slickTrackHeight + "px");
-    // });
-
-    // $(".gallery").slick({
-    //     slidesToShow: 2,
-    //     slidesToScroll: 1,
-    //     infinite: true,
-    //     //	variableWidth:true,
-    //     dots: true,
-    //     centerMode: false,
-    //     variableWidth: false,
-    //     autoplay: true,
-    //     autoplaySpeed: 5000,
-    //     arrows: false,
-    //     responsive: [
-    //         {
-    //             breakpoint: 1100,
-    //             settings: {
-    //                 slidesToShow: 2,
-    //                 slidesToScroll: 1,
-    //             },
-    //         },
-    //         {
-    //             breakpoint: 768,
-    //             settings: {
-    //                 slidesToShow: 1,
-    //                 slidesToScroll: 1,
-    //             },
-    //         },
-    //     ],
-    // });
-
-    //     $(".left").click(function () {
-    //         $(".gallery").slick("slickPrev");
-    //     });
-
-    //     $(".right").click(function () {
-    //         $(".gallery").slick("slickNext");
-    //     });
 
     $("#dismiss").on("click", function () {
         // hide sidebar

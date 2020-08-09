@@ -4,19 +4,19 @@ Booking {% endblock %} {% block body %}
 <div class="container mt-5">
     <form method = "POST" class="indent" id="content">
         {% csrf_token %}
-            <div class="search-wrapper mb-3">
+            <div class="search-wrapper  mb-3">
                     <div class="row" id="tl-search-form">
-                        <div class="col-3 align-self-center">
-                            {{form.arrival.label_tag}}
-                            {{form.arrival}}
+                        <div class="col-lg-4 col-md-6 col-sm-12  align-self-center">
+                                {{form.arrival.label_tag}}
+                                {{form.arrival}}
                         </div>
 
-                        <div class="col-4 align-self-center">
+                        <div class="col-lg-4 col-md-6 col-sm-12 align-self-center ">
                             {{form.departure.label_tag}}
                             {{form.departure}}
                         </div>
 
-                        <div class="col-3">
+                        <div class="col-lg-2  col-sm-12">
                             <span>
                                 Choose number guests per room:
                             </span>
@@ -24,8 +24,8 @@ Booking {% endblock %} {% block body %}
                             {{form.guests}}
                         </div>
 
-                        <div class="col-md-2 col-sm-12 align-self-center">
-                            <button class="button search-button">
+                        <div class="col-lg-2 col-sm-12 text-center">
+                            <button class="button search-button mt-3">
                                 Find room
                             </button>
                         </div>

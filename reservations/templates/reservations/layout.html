@@ -36,7 +36,7 @@
         <header>
             <div class="container-fluid relative">
                 <div class="fixed">
-                    <div class="row top tl-fixed-top">
+                    <div class="row top">
                         <div class="col-2">
                             <a href="{% url 'index' %}"
                                 ><img
@@ -46,23 +46,23 @@
                             /></a>
                         </div>
 
-                        <div class="main col-md-8 col-sm-12">
+                        <div class="col-md-10 col-sm-12">
                             <div class="row">
-                                <div class="col-lg-6 col-sm-12">
-                                    <a href="#map"
+                                <div class="col-lg-4 col-sm-12">
+                                    <a href="{% url 'about' %}"
                                         ><span class="adr"
-                                            >22/2, Sadovaya street,
-                                            Saint-Petersburg</span
+                                            >22/2, Robson street,
+                                            Vancouver</span
                                         ></a
                                     >
                                 </div>
 
-                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                <div class="col-lg-5 col-md-12 col-sm-12">
                                     <span class="phone"
                                         ><a href="tel:+9999999999"
                                             >+7 (999) 999-99-99</a
                                         ></span
-                                    >\
+                                    >
                                     <a href="mailto:sales@spb.ru"
                                         ><span class="mail"
                                             ><span class="email-adr"
@@ -71,27 +71,27 @@
                                         ></a
                                     >
                                 </div>
+
+                                <div class="auth col-lg-2 col-md-12 col-sm-12 ml-3">
+                                    {% if user.is_authenticated %}
+
+                                    <a href="{% url 'profile' user.username  %}"><span>{{ user.username }}</span>
+                                        </a
+                                    >
+                                    <a href="{% url 'logout' %}"
+                                        > \ Logout</a
+                                    >
+                                    {% else %}
+                                    <a href="{% url 'login' %}" >Sign in</a>
+
+                                    <a href="{% url 'registration' %}" title="Register">/Register</a>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="auth col-lg-2 col-md-12 col-sm-12">
-                            {% if user.is_authenticated %}
-
-                            <a href="{% url 'profile' user.username  %}"><span>{{ user.username }}</span>
-                                </a
-                            >
-                            <a href="{% url 'logout' %}"
-                                > \ Logout</a
-                            >
-                            {% else %}
-                            <a href="{% url 'login' %}" >Sign in</a>
-
-                            <a href="{% url 'registration' %}" title="Register">/Register</a>
-                            {% endif %}
-                        </div>
+                        </div> 
                     </div>
 
-                    <div class="row tl-fixed-nav">
+                    <div class="row fixed-nav">
                         <div class="col-md-12 col-lg-10 offset-lg-2 ">
                             <nav
                                 id="sidebar"
@@ -134,30 +134,11 @@
                                         <li class="nav-item">
                                             <a
                                                 class="nav-link"
-                                                href="/about/"
+                                                href="{% url 'about' %}"
                                                 title="About Us"
                                                 >About Us</a
                                             >
                                         </li>
-
-                                        <li class="nav-item">
-                                            <a
-                                                class="nav-link"
-                                                href="/reviews/"
-                                                title="Reviews"
-                                                >Reviews</a
-                                            >
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <a
-                                                class="nav-link"
-                                                href="/permit/"
-                                                title="Visa support"
-                                                >Visa support</a
-                                            >
-                                        </li>
-
                                         <button id= "dismiss" type="button" class="close" aria-label="Close">
                                           <span aria-hidden="true">&times; </span>
                                         </button>

@@ -129,8 +129,7 @@ ul.navbar-nav {
     display: flex;
     transition-property: transform;
     box-sizing: content-box;
-    margin-top:-100px;
-
+    margin-top: -100px;
 }
 
 .swiper-slide h1 {
@@ -165,7 +164,6 @@ ul.navbar-nav {
     background-size: cover;
 }
 
-
 /* swiper end */
 
 /* search form */
@@ -193,7 +191,8 @@ ul.navbar-nav {
     text-transform: none;
     border-radius: 6px;
     height: 42px;
-    min-width: 168px;
+    min-width: 100%;
+    /* min-width: 168px; */
     padding: 0 12px;
     cursor: pointer;
 }
@@ -343,8 +342,13 @@ button[disabled] {
     width: 100% !important;
     height: 100% !important;
 }
+/* rewrite bootstrap width */
+.card {
+        width: auto;
+    } 
 @media (max-width: 767px) {
-    header .logo, .swiper-wrapper{
+    header .logo,
+    .swiper-wrapper {
         display: none;
     }
     header {
@@ -357,11 +361,12 @@ button[disabled] {
         padding-top: 0;
         font-size: 15px;
     }
-    .card {
-        width: 30rem;
+}
+@media (max-width: 991px) {
+    .button {
+        min-width: 168px;
     }
 }
-
 @media (max-width: 1370px) and (min-width: 767px) {
     header .email-adr {
         display: none;
@@ -369,8 +374,8 @@ button[disabled] {
 }
 
 /* from 2nd  */
-/* /* @media (max-width: 991px) {
-    .row .col-sm-12 + * {
-        margin-top: 30px;
+ @media (max-width: 991px) {
+    header .col-sm-12 + * {
+        margin-top: 10px;
     }
-} */
+}
