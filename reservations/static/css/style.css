@@ -191,10 +191,12 @@ ul.navbar-nav {
     text-transform: none;
     border-radius: 6px;
     height: 42px;
-    min-width: 100%;
-    /* min-width: 168px; */
+    min-width: 168px;
     padding: 0 12px;
     cursor: pointer;
+}
+.search-button{
+    min-width: 100%;
 }
 
 .button:focus {

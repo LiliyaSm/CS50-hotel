@@ -21,11 +21,11 @@ class UserRegistrationForm(UserCreationForm):
         }))
         
     password1=forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
+        'class': 'form-control', "type":"password",
     }))
 
     password2=forms.CharField(widget=forms.TextInput(attrs={
-                'class': 'form-control',
+        'class': 'form-control', "type": "password"
             }))                                                                                               
 
     class Meta:

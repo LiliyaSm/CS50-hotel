@@ -1,23 +1,18 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from django.shortcuts import redirect, render, get_object_or_404
-from django.db.models import Q, Count
-from django.http import HttpResponse
-from .models import Booking, Room, RoomCategory, RoomImage, Transfer
+from .models import Booking, Room, RoomCategory, RoomImage
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-import datetime
 from django.views.generic.list import ListView
 from django.views.generic import DetailView, View
-from django import forms
 from django.http import JsonResponse
+from django.contrib import messages
+from .forms import TransferForm, BookingForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-
-now = str(datetime.date.today())
-tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
 
 def deserialize(data):
-    # converts json data to string
+    """ converts JSON data to string """
     return json.dumps(
         data,
         sort_keys=True,
@@ -25,42 +20,11 @@ def deserialize(data):
         cls=DjangoJSONEncoder
     )
 
-class BookingForm(forms.ModelForm):
-    class Meta:
-        model = Booking
-        fields = ('arrival', 'departure', "guests")
-        widgets = {
-            'arrival': forms.DateInput(attrs={'type': 'date', "value": now, "min": now }),
-            'departure': forms.DateInput(attrs={'type': 'date', "value": tomorrow, "min": tomorrow}),
-        }
-
-
-class TransferForm(forms.ModelForm):
-
-    class Meta:
-        model = Transfer
-        fields = ('arrivalDate', 'arrivalTime', 'flightNumber', "checked")
-
-        help_texts = {
-            "flightNumber": "Including letters and digits"
-        }
-        labels = {
-            'flightNumber': "Flight number",
-            'arrivalDate': "Arrival date",
-            'arrivalTime': "Arrival time",
-        }
-
-        widgets = {
-            'arrivalDate': forms.DateInput(attrs={'type': 'date', "value": now, "min": now}),
-            "arrivalTime": forms.TimeInput(attrs={'type': 'time'}, format='%H:%M',),
-            "checked": forms.CheckboxInput(),
-        }        
-
 
 def execute_query(queryOrder):
+    """ takes dictionary(category, arrival and departure) and returns RawQuerySet with unoccupied rooms id """
 
     # Dictionary params not supported with SQLite
-
     return Room.objects.raw('''select rooms.id
                 from "reservations_room" as rooms
                 where
@@ -75,10 +39,11 @@ def execute_query(queryOrder):
                             (bookings.arrival <= %s AND bookings.departure > %s) OR
                             (bookings.arrival >= %s AND bookings.departure <= %s))))
                         group by rooms.id)  ''',
-                     [queryOrder["category"], queryOrder["category"], queryOrder["departure"], queryOrder["departure"],
-                      queryOrder["arrival"], queryOrder["arrival"],
-                      queryOrder['arrival'], queryOrder["departure"]
-                      ])
+                            [queryOrder["category"], queryOrder["category"], queryOrder["departure"], queryOrder["departure"],
+                             queryOrder["arrival"], queryOrder["arrival"],
+                             queryOrder['arrival'], queryOrder["departure"]
+                             ])
+
 
 class CategoryListView(ListView):
     """creates a list of all existing room categories"""
@@ -103,21 +68,38 @@ class CategoryDetail(DetailView):
 
 class IndexView(View):
     """rendering items on the main page"""
+
     template_name = 'reservations/index.html'
     form = BookingForm()
+
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {'form': self.form})
 
 
 class AboutView(View):
-    """rendering items on the main page"""
+    """rendering about page"""
+
     template_name = 'reservations/about.html'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
+
+class SuccessView(LoginRequiredMixin, View):
+    """rendering success order page"""
+
+    template_name = 'reservations/success.html'
+    login_url = '/users/login/'
+
+    def get(self, request, *args, **kwargs):
+        # get id number of order sent during redirect
+        id = self.kwargs['id']
+        return render(request, self.template_name, {"id": id})
+
+
 class BookingView(View):
     """renders room search page"""
+
     template_name = "reservations/booking.html"
 
     def get(self, request, *args, **kwargs):
@@ -132,21 +114,20 @@ class BookingView(View):
                 data = eval(request.session.get('form_data'))
                 form = BookingForm(initial=data)
             except TypeError:
-                #if form empty display all available rooms (first search)
+                # if session form empty display all available rooms (first search)
                 form = BookingForm()
                 return render(request, self.template_name, {
-                    "form": form, "available_rooms": available_rooms, 
-            })       
+                    "form": form, "available_rooms": available_rooms,
+                })
         return render(request, self.template_name, {'form': form, "available_rooms": available_rooms})
-
 
     def post(self, request, *args, **kwargs):
 
         if BookingForm(request.POST).is_valid():
             try:
-                # if previous order wasn't finished populate it with new data
+                # if previous order wasn't finished find it and populate it with new data
                 booking_entry = Booking.objects.get(
-                        user=request.user, confirmed=False)
+                    user=request.user, confirmed=False)
                 form = BookingForm(
                     request.POST, instance=booking_entry)
             except Booking.DoesNotExist:
@@ -164,10 +145,10 @@ class BookingView(View):
             #   find available rooms for booking in chosen category
             rooms = execute_query(queryOrder)
             if rooms:
-                room = rooms[0]
-                order.room = room
+                order.room = rooms[0]
                 # calculate the price
-                delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
+                delta = form.cleaned_data["departure"] - \
+                    form.cleaned_data["arrival"]
                 total_price = getattr(category, "price")*delta.days
                 order.calc_price = total_price
 
@@ -175,22 +156,26 @@ class BookingView(View):
                 return redirect("confirm")
             else:
                 # all rooms from showed category are occupied
+                messages.add_message(request, messages.INFO,
+                                     'Room is occupied! Please, choose another')
                 return redirect("booking")
 
 
-
-class ConfirmView(View):
+class ConfirmView(LoginRequiredMixin, View):
     """renders order confirm page"""
     template_name = "reservations/confirm.html"
     transferForm = TransferForm()
+    login_url = '/users/login/'
 
     def get(self, request, *args, **kwargs):
-        booking = get_object_or_404(Booking, user=request.user, confirmed=False)
+        booking = get_object_or_404(
+            Booking, user=request.user, confirmed=False)
         return render(request, self.template_name, {"booking": booking, "transferForm": self.transferForm})
 
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(
             Booking, user=request.user, confirmed=False)
+        # save transfer and link to the order
         transfer_confirm = TransferForm(request.POST)
         if transfer_confirm.is_valid() and transfer_confirm.cleaned_data["checked"]:
             transfer_confirm = transfer_confirm.save(commit=False)
@@ -198,27 +183,24 @@ class ConfirmView(View):
             transfer_confirm.save()
 
         # make sure that room is still available
-        category = get_object_or_404(RoomCategory, pk=order.room.category.id) 
-
-        queryOrder = {'category': category.id, 'arrival': order.arrival, 'departure': order.departure}
+        category = get_object_or_404(RoomCategory, pk=order.room.category.id)
+        queryOrder = {'category': category.id,
+                      'arrival': order.arrival, 'departure': order.departure}
         query = execute_query(queryOrder)
 
-        for r in query:
-            print(r)
-
         # if chosen room is not available anymore, rewrite it with another room from the same category
-        
         if query:
-            if order.room.id != query[0].id:            
+            if order.room.id != query[0].id:
                 order.room = query[0]
         else:
             # there is no free rooms
+            messages.add_message(request, messages.INFO,
+                                 'Room is occupied! Please, choose another:')
             return redirect("booking")
 
         order.confirmed = True
         order.save()
-        return redirect("index")
-
+        return redirect("success", order.id)
 
 
 def booking_submit(request):
@@ -250,7 +232,7 @@ def booking_submit(request):
                             (bookings.arrival <= %s AND bookings.departure > %s) OR
                             (bookings.arrival >= %s AND bookings.departure <= %s))))
                         group by rooms.id)  ''',
-                             [queryOrder["category"], queryOrder["category"], 
+                             [queryOrder["category"], queryOrder["category"],
                               queryOrder["departure"], queryOrder["departure"],
                               queryOrder["arrival"], queryOrder["arrival"],
                               queryOrder['arrival'], queryOrder["departure"]
@@ -259,4 +241,3 @@ def booking_submit(request):
     categories = set(room.category.id for room in rooms)
 
     return JsonResponse({"categories": list(categories)})
-                                                         

@@ -12,6 +12,7 @@ urlpatterns = [
     path('booking_submit', views.booking_submit, name='booking_submit'),
     path('confirm', views.ConfirmView.as_view(), name='confirm'),
     path('about', views.AboutView.as_view(), name="about"),
+    path('success/<int:id>', views.SuccessView.as_view(), name="success"),
 ]
     
 # urlpatterns += staticfiles_urlpatterns()
