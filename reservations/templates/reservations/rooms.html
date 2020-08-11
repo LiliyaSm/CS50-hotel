@@ -10,10 +10,10 @@ Booking {% endblock %}
 <div class="row indent">
 
         {% for room in object_list %}
-        <div class="col-md-6 col-lg-6 col-sm-12 mb-3">
+        <div class="col-md-6 col-lg-6 col-sm-12 mb-4">
                 <a class = "category" href="{% url 'room-detail' room %}" target=_blank>
         
-                        <h2>{{ room }}</h2>
+                        <h2> {{room.name_verbose }} </h2>
                     <div> {{ room.description }}</div>
                     
         

@@ -2,11 +2,6 @@ header {
     background: #fff;
     padding: 0;
 }
-/* 
-.tl-fixed-top {
-    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 2);
-    background-color: white;
-} */
 
 header .row.top {
     padding: 1.5em 0;
@@ -45,7 +40,6 @@ header .logo {
     position: absolute;
     left: 3em;
     top: -2em;
-    /* z-index: 101; */
 }
 
 .navbar {
@@ -195,7 +189,7 @@ ul.navbar-nav {
     padding: 0 12px;
     cursor: pointer;
 }
-.search-button{
+.search-button {
     min-width: 100%;
 }
 
@@ -262,6 +256,7 @@ footer {
     position: relative;
 }
 
+/* swiper arrows */
 .right {
     right: -75px;
     background: url(/static/img/arrow.svg) no-repeat;
@@ -312,7 +307,7 @@ footer {
     background-color: #efefef;
     border: 3px solid rgba(0, 0, 0, 0.3);
     border-radius: 5px;
-    width: 700px;
+    width: 400px;
     z-index: 999;
 }
 
@@ -344,10 +339,12 @@ button[disabled] {
     width: 100% !important;
     height: 100% !important;
 }
+
 /* rewrite bootstrap width */
 .card {
-        width: auto;
-    } 
+    width: auto;
+}
+
 @media (max-width: 767px) {
     header .logo,
     .swiper-wrapper {
@@ -375,8 +372,8 @@ button[disabled] {
     }
 }
 
-/* from 2nd  */
- @media (max-width: 991px) {
+/* from 2nd element */
+@media (max-width: 991px) {
     header .col-sm-12 + * {
         margin-top: 10px;
     }

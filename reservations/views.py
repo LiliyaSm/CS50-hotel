@@ -147,8 +147,7 @@ class BookingView(View):
             if rooms:
                 order.room = rooms[0]
                 # calculate the price
-                delta = form.cleaned_data["departure"] - \
-                    form.cleaned_data["arrival"]
+                delta = form.cleaned_data["departure"] - form.cleaned_data["arrival"]
                 total_price = getattr(category, "price")*delta.days
                 order.calc_price = total_price
 

@@ -12,6 +12,7 @@ function addBodyClass() {
 }
 
 function formatDate(date) {
+    // converts dates in string for min input field
     let day = date.getDate();
     if (day < 10) {
         day = "0" + day;
@@ -21,55 +22,51 @@ function formatDate(date) {
         month = "0" + month;
     }
     let year = date.getFullYear();
-    return year + "-" + month + "-" + day ;
-} 
+    return year + "-" + month + "-" + day;
+}
 
 function getData() {
-const arrival = $("#id_arrival").val();
-const departure = $("#id_departure").val();
-const guests = $("#id_guests").val();
-$.get(
-    "booking_submit",
-    { arrival: arrival, departure: departure, guests: guests },
-    function (response) {
-        const cards = $(".card-body");
-        cards.closest(".card").parent().removeClass("hide");
-        cards.each(function () {
-            let id = parseInt(
-                $(this).find("button").attr("value")
-            );
-            // if card id is not included in response, hide this card
-            if (!response.categories.includes(id)) {
-                $(this)
-                    .closest(".card")
-                    .parent()
-                    .addClass("hide");
-            }
-        });
+    // recieves list of all available rooms by AJAX
+    const arrival = $("#id_arrival").val();
+    const departure = $("#id_departure").val();
+    const guests = $("#id_guests").val();
+    $.get(
+        "booking_submit",
+        { arrival: arrival, departure: departure, guests: guests },
+        function (response) {
+            const cards = $(".card-body");
+            cards.closest(".card").parent().removeClass("hide");
+            cards.each(function () {
+                let id = parseInt($(this).find("button").attr("value"));
+                // if card id is not included in response, hide this card
+                if (!response.categories.includes(id)) {
+                    $(this).closest(".card").parent().addClass("hide");
+                }
+            });
 
-
-        // display info message if all cards with available rooms are hidden
-        let allHide=true
-        cards.each(function () {
-             if (!$(this).parent().parent().hasClass('hide')){
-                allHide = false;
+            // display info message if all cards with available rooms are hidden
+            let allHide = true;
+            cards.each(function () {
+                if (!$(this).parent().parent().hasClass("hide")) {
+                    allHide = false;
+                }
+            });
+            if (allHide) {
+                // check if div is not already appended
+                if ($(".infoMsg").length === 0) {
+                    $(".rooms").append(
+                        "<div  class = 'infoMsg'><h4  class = 'text-center'> Nothing found, try another date or guests number</h4></div>"
+                    );
+                }
+            } else {
+                $(".infoMsg").remove();
             }
-        })
-        if( allHide) {
-            // div is not already appended
-            if ($('.infoMsg').length === 0)
-                { $(".rooms").append(
-                "<div  class = 'infoMsg'><h4  class = 'text-center'> Nothing found, try another date or guests number</h4></div>"
-            );}
         }
-        else {
-            $(".infoMsg").remove();
-        }
-    }
-);}
+    );
+}
 
 function Slideshow() {
-// shows slides on index page
+    // shows slides on index page
     $(".swiper-wrapper > div:gt(0)").hide();
     function do_slide() {
         interval = setInterval(function () {
@@ -79,7 +76,6 @@ function Slideshow() {
                 .fadeIn(1000)
                 .end()
                 .appendTo(".swiper-wrapper");
-
         }, 3000);
     }
     do_slide();
@@ -91,7 +87,6 @@ function Slideshow() {
         do_slide();
     });
 }
-
 
 $(document).ready(function () {
     //  setting up AJAX to pass CSRF token
@@ -125,15 +120,14 @@ $(document).ready(function () {
         },
     });
 
+    
     $("#tl-search-form input, #tl-search-form select").each(function () {
         // when changing input fields add a new style to buttons
-        $(this).change(function() {
+        $(this).change(function () {
             $(".button.booking").prop("disabled", true);
             $(".button.booking").addClass("disabled");
             $(".button.search-button").addClass("active");
-
-
-        })
+        });
     });
 
     $(".search-button").on("click", function (e) {
@@ -142,10 +136,8 @@ $(document).ready(function () {
         $(".button.booking").prop("disabled", false);
         $(".button.booking").removeClass("disabled");
         $(".button.search-button").removeClass("active");
-
-
     });
-    
+
     //show side nav menu
     $(".navbar-toggler").on("click", function (e) {
         $(".navbar-collapse").addClass("slide");
@@ -165,7 +157,7 @@ $(document).ready(function () {
     if (window.location.pathname == "/") {
         Slideshow();
     }
-    
+
     if (window.location.pathname == "/booking") {
         getData();
     }
@@ -175,11 +167,14 @@ $(document).ready(function () {
         let departureDate = new Date(id_arrival.value);
         departureDate.setDate(departureDate.getDate() + 1);
         id_departure.min = formatDate(departureDate);
-        if (new Date(id_departure.value) < new Date(id_departure.min)){
-            id_departure.value = id_departure.min;}
+        if (new Date(id_departure.value) < new Date(id_departure.min)) {
+            id_departure.value = id_departure.min;
+        }
     });
 
-    $(".unauthenticated").on("click", function () {
+    $(".unauthenticated").on("click", function (e) {
+        // not allowed to do POST request for unauthorized user and show msg
+        e.preventDefault();
         $(".sign-message").removeClass("hide");
     });
     $(".sign-message .close").click(function () {
@@ -189,6 +184,7 @@ $(document).ready(function () {
     $(".transfer").hide();
 
     $("#id_checked").click(function () {
+        // show and hide transfer form
         if ($(this).is(":checked")) {
             $(".transfer").show();
             $(".transfer input").each(function () {
@@ -201,8 +197,6 @@ $(document).ready(function () {
             });
         }
     });
-
-
 });
 
 $(window).on("load resize", function () {

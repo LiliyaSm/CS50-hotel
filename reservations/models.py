@@ -27,11 +27,10 @@ class RoomFacility(models.Model):
 
 class RoomCategory(models.Model):
     CATEGORY_CHOICES = (
-        ('single', 'Single'),
-        ('double', 'Double/twin'),
-        ('superior', 'Superior'),
-        ('suite', 'Suite'),
-        ('SPA', 'Suite SPA'),
+        ('Single', 'Single'),
+        ('Double', 'Double'),
+        ('Superior', 'Superior'),
+        ('Suite-SPA', 'Suite SPA'),
     )
 
     name = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
@@ -39,11 +38,13 @@ class RoomCategory(models.Model):
     # the upload_to option to specify a subdirectory of MEDIA_ROOT to use for uploaded files
     mainFoto = models.ImageField(upload_to=upload_path, blank=True, null=True)
     facilities = models.ManyToManyField(RoomFacility)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     capacity = models.PositiveIntegerField(choices=GUESTS_CHOICES, default=1)
     totalAmount = models.PositiveIntegerField(default=1)
 
-    # items = models.ManyToManyField("self", symmetrical=False, blank=True)
+    # names to display in the template
+    def name_verbose(self):
+        return dict(RoomCategory.CATEGORY_CHOICES)[self.name]
 
     def __str__(self):
         return f"{self.name}"

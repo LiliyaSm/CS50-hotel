@@ -16,7 +16,7 @@ Confirmation {% endblock %}
         <h5 class="mb-3">
             Please, confirm the order:
         </h5>
-        <div class="mb-3"> You are booking {{ booking.room.category}} room from {{booking.arrival}} to {{booking.departure}} 
+        <div class="mb-3"> You are booking {{ booking.room.category.name_verbose }} room from {{booking.arrival}} to {{booking.departure}} 
             at the total price<strong> {{booking.calc_price}}</strong></div>
         <h4>
         </h4>
