@@ -147,8 +147,8 @@ $(document).ready(function () {
     });
 
     $("#dismiss").on("click", function () {
+
         // hide sidebar
-        // $(".navbar-collapse").addClass("collapse");
         $(".navbar-collapse").addClass("hide-menu");
         $(".navbar-collapse").removeClass("slide");
         $(".overlay").addClass("collapse");

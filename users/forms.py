@@ -35,6 +35,7 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class ProfileForm(forms.ModelForm):
+    '''extended user profile'''
     last_name = forms.CharField(required=False)
     first_name = forms.CharField(required=False)
     citizenship = forms.CharField(required=False)
@@ -45,10 +46,12 @@ class ProfileForm(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         """
-        Update the primary email address on the related User object as well. 
+        Update the primary email address and names on the related User object
         """
         u = self.instance.user
         u.first_name = self.cleaned_data['first_name']
+        u.last_name = self.cleaned_data['last_name']
+        u.email = self.cleaned_data['email']
         u.save()
         profile = super(ProfileForm, self).save(*args,**kwargs)
         return profile

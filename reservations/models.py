@@ -11,7 +11,7 @@ GUESTS_CHOICES = (
        (3, 3),
        (4, 4),
    )
-# upload_location = FileSystemStorage(location='/reservations/static/img')
+
 upload_path = 'roomFotos'
 
 class RoomFacility(models.Model):
@@ -100,7 +100,6 @@ class RoomImage(models.Model):
     room = models.ForeignKey(
         RoomCategory, on_delete=models.CASCADE, related_name='images')
     img = models.ImageField(upload_to=upload_path, blank=True, null=True)
-    # uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.room} image"

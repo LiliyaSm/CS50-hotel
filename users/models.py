@@ -25,8 +25,3 @@ def update_profile_signal(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
     instance.profile.save()
 
-
-# @receiver(post_save, sender=Profile)
-# def update_profile_signal(sender, instance, **kwargs):
-
-#     instance.user.save()

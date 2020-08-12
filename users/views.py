@@ -3,11 +3,11 @@ from django.contrib.auth import authenticate, login
 from users.forms import UserRegistrationForm, ProfileForm
 from .models import Profile
 from django.contrib.auth.models import User
-
 from django.contrib.auth.decorators import login_required
 
 
 def registration(request):
+    ''' provides the registration process and creates user profile'''
     if request.user.is_authenticated:
         return redirect('index')
 
@@ -19,7 +19,7 @@ def registration(request):
             user = form.save()
             # reloading the database after the signal, profile instance will load
             user.refresh_from_db()
-            # set the cleaned data to the fields
+            # set the cleaned data to the profile fields
             user.profile.first_name = form.cleaned_data.get('first_name')
             user.profile.last_name = form.cleaned_data.get('last_name')
             user.profile.email = form.cleaned_data.get('email')
@@ -46,27 +46,29 @@ def registration(request):
 
 @login_required()
 def get_user_profile(request, username):
+    '''renders profile page'''
     user = User.objects.get(username=username)
     profile = Profile.objects.get(user=user)
     form = ProfileForm()
 
     return render(request, 'users/user_profile.html', {"user": user,
-                                                        "profile": profile,
-                                                        "form":form})
+                                                       "profile": profile,
+                                                       "form": form})
 
 
 @login_required()
 def edit_user_profile(request, username):
+    '''renders profile edit page and saves profiles changes'''
+    
     if request.method == 'POST':
         profile = Profile.objects.get(user=request.user)
+        # get existing instance and populate with new info from the request
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            # form_filled = ProfileForm(instance=profile)
             return redirect("profile", request.user.username)
         return render(request, 'users/edit_profile.html', {"form_filled": form})
     else:
-
         user = User.objects.get(username=username)
         profile = Profile.objects.get(user=user)
         form_filled = ProfileForm(instance=profile)
