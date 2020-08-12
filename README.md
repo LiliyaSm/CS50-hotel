@@ -10,6 +10,7 @@ Note, that it's possible to check-in and check- out for different guests on the 
 ### Distinctiveness and complexity requirements:
 This project uses class-based Django views (ListView, DetailView) unlike my previous projects in the CS50 course. Project is implemented with complex forms usage, the admin panel provides multiple images upload capabilities, and custom SQL queries were used to provide available bookings search. It also has more complex page layouts and design: I have implemented a custom mobile navigation menu and slider, swiper. User registration is more difficult either: every user has an editable profile linked with the related user object.
 
+### Project structure:
 Project Hotel has two installed apps - users and reservations.
 
 
@@ -40,6 +41,6 @@ Technologies:
 4. Bootstrap 4
 
 
-![database schema](https://www.planttext.com/api/plantuml/img/XPDDJyCm38Rl-HKv8u745N4O7vgq0qD2uuoyrElCcgHANAH9_7ZIDbdIWCIbiPyazcixNNa6nuFkvAsm-qzKBD-irK_0s5ft5gBqv9safYO6DDQiGQySzKpMr5iQoAmjsveVG557JEZhdTwH-fL1GHykyBdcR1cw1sq7mw8iQ3s7ZmKbBnTK4aPT7RkHLPeNCEUGQreNUUQBEMwmN5YsWzwZIqHTkhkKV_zzBUEHLuCvVahmQEs9J2k5IDQK9pll7jsc16FkmWNdw0kwWZJOZ_DtMB1sGC--00ewzJ6FOIvXKfht5sAZrb6A5zCtd0YYahaTtqlqnZZ_1TevCFuGcYUIDLTTUEg8weGB52jz3gtz0-z8B_2Xe_R8SKW5jwuP4oU1Kbu5kHT5CYiEo-8PR3IqiLcJcKPH0j9jDV-v7Jc0h5koGjE4VpMyY1y0)
+![database schema](https://www.planttext.com/api/plantuml/img/XLDBImCn4BxdL-GiA7WL3_L1eGSLf9vbcfrkq-Qn9BD2mHzlTfDqaoXusPdvaiptpMDNdi3Hg1M_PIH98Ny6WXruv5uSK0DZTdT4GVpTMlq4XBrrPyRAYDznsRM80Oqjrg4NJWuahMcFD4YpjcHRV0z2AaaIVNioE2b-CGWOmWCwjpXP0lMWxMYeAcWTqwU2ShGKL2A4khbsmnkQ5p3dm3NRYYS-NF86pmNpEkeTkeo8ItTh-VVVrpnTUJEuvCy4ZzQUfEavOzcRUPPWzEWs9J1n5o4u9xz05KY7mxGM3Wki7z6JBm01Idp6CSGIPgNBUIKsQVq8KZoRlr5bTkTzIT6Kvxz4MmV6xqFpMFPYlY8A-ojEM46fqh3Z-0UybRg2zqhs1qf3Ad3hkeau2-JyAiYzAEABuc2gDTXew5EpPZUFeWIaxflvntOi2NZRaXMQBlp2OID-0000)
 
 Detailed requirements can be found [here](https://cs50.harvard.edu/web/2020/projects/final/capstone/)
