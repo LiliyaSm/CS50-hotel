@@ -7,7 +7,7 @@ Rooms in the hotel are grouped by room categories. Each room category shares the
 Note, that it's possible to check-in and check- out for different guests on the same day for the same room.
 
 
-###Distinctiveness and complexity requirements:
+### Distinctiveness and complexity requirements:
 This project uses class-based Django views (ListView, DetailView) unlike my previous projects in the CS50 course. Project is implemented with complex forms usage, the admin panel provides multiple images upload capabilities, and custom SQL queries were used to provide available bookings search. It also has more complex page layouts and design: I have implemented a custom mobile navigation menu and slider, swiper. User registration is more difficult either: every user has an editable profile linked with the related user object.
 
 Project Hotel has two installed apps - users and reservations.
